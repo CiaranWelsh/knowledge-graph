@@ -135,7 +135,14 @@ function importGraph() {
 }
 
 function exportGraph() {
-  if (!graphData) return;
+  if (!graphData || !cy) return;
+  // Save current node positions into graphData
+  cy.nodes().forEach(n => {
+    const pos = n.position();
+    if (graphData.nodes[n.id()]) {
+      graphData.nodes[n.id()].position = { x: Math.round(pos.x), y: Math.round(pos.y) };
+    }
+  });
   const json = JSON.stringify(graphData, null, 2);
   const blob = new Blob([json + '\n'], { type: 'application/json' });
   const url = URL.createObjectURL(blob);

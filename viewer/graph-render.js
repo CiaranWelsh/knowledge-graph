@@ -105,8 +105,14 @@ function initGraph() {
   document.getElementById('graph-title').textContent =
     graphData.name || 'Skill Tree';
 
-  runLayout(currentLayout);
-  updateLegend();
+  // If nodes have saved positions, use them; otherwise run layout
+  const hasPositions = Object.values(graphData.nodes).some(n => n.position);
+  if (hasPositions) {
+    updateLegend();
+  } else {
+    runLayout(currentLayout);
+    updateLegend();
+  }
 }
 
 function buildElements(data) {
@@ -119,7 +125,7 @@ function buildElements(data) {
     const colours = STATUS_COLOURS[status] || STATUS_COLOURS.untested;
     const isFrontier = frontierIds.has(id);
 
-    elements.push({
+    const el = {
       group: 'nodes',
       data: {
         id,
@@ -131,7 +137,11 @@ function buildElements(data) {
         borderColor: isFrontier ? '#ffffff' : colours.bg,
         borderOpacity: isFrontier ? 0.8 : 0,
       }
-    });
+    };
+    if (node.position) {
+      el.position = { x: node.position.x, y: node.position.y };
+    }
+    elements.push(el);
 
     for (const prereq of (node.prerequisites || [])) {
       if (nodes[prereq]) {
