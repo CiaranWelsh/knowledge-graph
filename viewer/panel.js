@@ -26,7 +26,9 @@ function showPanel(nodeId) {
 
   content.innerHTML = `
     <div class="panel-header">
-      <h2>${esc(node.name || nodeId)}</h2>
+      <input class="panel-name-input" value="${esc(node.name || nodeId)}"
+             onblur="changeName('${escId(nodeId)}', this.value)"
+             onkeydown="if(event.key==='Enter'){this.blur()}">
       <span class="node-id">${esc(nodeId)}</span>
     </div>
 
@@ -57,7 +59,9 @@ function showPanel(nodeId) {
 
     <div class="panel-section">
       <span class="panel-label">Description</span>
-      <div class="panel-value">${esc(node.description || '—')}</div>
+      <textarea class="panel-textarea" id="desc-editor"
+                placeholder="Add a description..."
+                onblur="changeDescription('${escId(nodeId)}', this.value)">${esc(node.description || '')}</textarea>
     </div>
 
     <div class="panel-section">
@@ -127,6 +131,23 @@ function selectNode(nodeId) {
     showPanel(nodeId);
     cy.animate({ center: { eles: node }, duration: 200 });
   }
+}
+
+function changeName(nodeId, value) {
+  if (!graphData || !graphData.nodes[nodeId]) return;
+  const trimmed = value.trim();
+  if (!trimmed || graphData.nodes[nodeId].name === trimmed) return;
+  graphData.nodes[nodeId].name = trimmed;
+  refreshGraph();
+  autoSave();
+}
+
+function changeDescription(nodeId, value) {
+  if (!graphData || !graphData.nodes[nodeId]) return;
+  const trimmed = value.trim();
+  if (graphData.nodes[nodeId].description === trimmed) return;
+  graphData.nodes[nodeId].description = trimmed;
+  autoSave();
 }
 
 function changeShape(nodeId, shape) {

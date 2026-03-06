@@ -241,6 +241,7 @@ function refreshGraph() {
     const colours = getStatusColour(status);
     const isFrontier = frontierIds.has(n.id());
 
+    n.data('label', node.name || n.id());
     n.data('bg', colours.bg);
     n.data('fg', colours.fg);
     n.data('status', status);
