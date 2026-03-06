@@ -17,6 +17,20 @@ const MIME = {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
 
+  // GET /schema — return the JSON Schema
+  if (req.method === 'GET' && url.pathname === '/schema') {
+    const schemaPath = path.join(ROOT, 'schema', 'graph.schema.json');
+    fs.readFile(schemaPath, (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'Schema file not found' }));
+      }
+      res.writeHead(200, { 'Content-Type': 'application/schema+json' });
+      res.end(data);
+    });
+    return;
+  }
+
   // POST /save?file=examples/pattern-taxonomy.json — write JSON to disk
   if (req.method === 'POST' && url.pathname === '/save') {
     const file = url.searchParams.get('file');
