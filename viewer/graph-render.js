@@ -80,8 +80,8 @@ function initGraph() {
     ],
     layout: { name: 'preset' },
     wheelSensitivity: 0.25,
-    minZoom: 0.2,
-    maxZoom: 3,
+    minZoom: 0.05,
+    maxZoom: 10,
   });
 
   // Wire events
@@ -254,7 +254,7 @@ function refreshGraph() {
 let nodeFontSize = 11;
 
 function changeFontSize(delta) {
-  nodeFontSize = Math.max(8, Math.min(20, nodeFontSize + delta));
+  nodeFontSize = Math.max(4, Math.min(72, nodeFontSize + delta));
   if (!cy) return;
   cy.style().selector('node').style('font-size', nodeFontSize + 'px').update();
 }
