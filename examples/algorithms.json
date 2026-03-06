@@ -1,0 +1,174 @@
+{
+  "name": "Algorithms & Data Structures",
+  "description": "DS&A skill graph for coding interview preparation",
+  "nodes": {
+    "variables-and-types": {
+      "name": "Variables & Types",
+      "description": "Python variables, basic types, assignment",
+      "prerequisites": [],
+      "status": "mastered",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "control-flow": {
+      "name": "Control Flow",
+      "description": "if/else, for loops, while loops",
+      "prerequisites": ["variables-and-types"],
+      "status": "mastered",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "functions": {
+      "name": "Functions",
+      "description": "Defining and calling functions, parameters, return values",
+      "prerequisites": ["control-flow"],
+      "status": "mastered",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "big-o": {
+      "name": "Big O Notation",
+      "description": "Time and space complexity analysis",
+      "prerequisites": ["control-flow"],
+      "status": "solid",
+      "last_tested": null,
+      "exercise_series": "exercises/00_complexity/"
+    },
+    "arrays-and-lists": {
+      "name": "Arrays & Lists",
+      "description": "Python lists, indexing, slicing, iteration",
+      "prerequisites": ["control-flow"],
+      "status": "mastered",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "hash-maps": {
+      "name": "Hash Maps",
+      "description": "Dictionaries, sets, hash tables, O(1) lookup",
+      "prerequisites": ["arrays-and-lists"],
+      "status": "solid",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "strings-and-parsing": {
+      "name": "Strings & Parsing",
+      "description": "String manipulation, parsing, encoding",
+      "prerequisites": ["arrays-and-lists"],
+      "status": "developing",
+      "last_tested": null,
+      "exercise_series": "exercises/04_strings_and_parsing/"
+    },
+    "node-concept": {
+      "name": "Node Concept",
+      "description": "Nodes as objects with data and references to other nodes",
+      "prerequisites": ["variables-and-types"],
+      "status": "solid",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "linked-lists": {
+      "name": "Linked Lists",
+      "description": "Singly/doubly linked list traversal and manipulation",
+      "prerequisites": ["node-concept", "control-flow"],
+      "status": "solid",
+      "last_tested": null,
+      "exercise_series": "exercises/01_linked_lists/"
+    },
+    "stacks-and-queues": {
+      "name": "Stacks & Queues",
+      "description": "LIFO/FIFO structures, applications",
+      "prerequisites": ["arrays-and-lists", "linked-lists"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "recursion": {
+      "name": "Recursion",
+      "description": "Base cases, recursive calls, call stack",
+      "prerequisites": ["functions"],
+      "status": "solid",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "sorting": {
+      "name": "Sorting Algorithms",
+      "description": "Selection sort, insertion sort, merge sort, quicksort",
+      "prerequisites": ["arrays-and-lists", "recursion", "big-o"],
+      "status": "developing",
+      "last_tested": null,
+      "exercise_series": "exercises/03_sorting/"
+    },
+    "binary-search": {
+      "name": "Binary Search",
+      "description": "Search in sorted arrays, bisect",
+      "prerequisites": ["arrays-and-lists", "big-o"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "two-pointers": {
+      "name": "Two Pointers",
+      "description": "Two pointer technique for array/string problems",
+      "prerequisites": ["arrays-and-lists", "big-o"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "sliding-window": {
+      "name": "Sliding Window",
+      "description": "Fixed and variable size window patterns",
+      "prerequisites": ["two-pointers", "hash-maps"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "trees": {
+      "name": "Trees",
+      "description": "Binary trees, BSTs, tree traversal",
+      "prerequisites": ["node-concept", "recursion"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "heaps": {
+      "name": "Heaps & Priority Queues",
+      "description": "Min/max heaps, heapq, top-k patterns",
+      "prerequisites": ["trees", "arrays-and-lists"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "graphs": {
+      "name": "Graphs",
+      "description": "Adjacency list/matrix representation, directed/undirected",
+      "prerequisites": ["node-concept", "hash-maps"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "bfs": {
+      "name": "Breadth-First Search",
+      "description": "Level-order traversal, shortest path in unweighted graphs",
+      "prerequisites": ["graphs", "stacks-and-queues"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "dfs": {
+      "name": "Depth-First Search",
+      "description": "Pre/in/post-order traversal, cycle detection, connected components",
+      "prerequisites": ["graphs", "recursion"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "dynamic-programming": {
+      "name": "Dynamic Programming",
+      "description": "Overlapping subproblems, memoization, tabulation",
+      "prerequisites": ["recursion", "big-o"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    }
+  }
+}

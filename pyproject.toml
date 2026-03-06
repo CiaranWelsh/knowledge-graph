@@ -1,0 +1,8 @@
+[project]
+name = "knowledge-graph"
+version = "0.1.0"
+description = "Skill dependency graph for structured learning"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
