@@ -23,6 +23,12 @@ g.save()
 
 ## JSON schema
 
+The formal JSON Schema is at [`schema/graph.schema.json`](schema/graph.schema.json). Use it for editor autocompletion and validation:
+
+```json
+{ "$schema": "./schema/graph.schema.json" }
+```
+
 A graph is a single JSON file with this structure:
 
 ```json

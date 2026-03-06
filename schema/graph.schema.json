@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/CiaranWelsh/knowledge-graph/schema/graph.schema.json",
+  "title": "Knowledge Graph",
+  "description": "A directed acyclic graph of nodes with prerequisites and per-node status tracking. Supports custom status schemes.",
+  "type": "object",
+  "required": ["name", "nodes"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for this graph."
+    },
+    "description": {
+      "type": "string",
+      "description": "What this graph is for."
+    },
+    "statuses": {
+      "type": "array",
+      "description": "Custom status scheme. If omitted, defaults are used: untested, weak, developing, solid, mastered. Array order determines display order in the viewer. The first entry is the default status for new nodes.",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/status"
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "description": "Map of node ID to node object. IDs should be kebab-case.",
+      "additionalProperties": {
+        "$ref": "#/$defs/node"
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "type": "object",
+      "description": "A status definition with ID, display label, and colour.",
+      "required": ["id", "label", "color"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier used in node status fields.",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable display label."
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex colour for node background in the viewer.",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "description": "A node in the graph representing a skill, concept, or topic.",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable display name."
+        },
+        "description": {
+          "type": "string",
+          "description": "What this node represents."
+        },
+        "prerequisites": {
+          "type": "array",
+          "description": "Node IDs that must come before this one. Must reference existing node keys. No cycles allowed.",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status. Must be one of the defined status IDs (custom or default). Defaults to the first status in the scheme."
+        },
+        "last_tested": {
+          "type": ["string", "null"],
+          "description": "ISO 8601 date of last assessment.",
+          "format": "date"
+        },
+        "exercise_series": {
+          "type": ["string", "null"],
+          "description": "Path to associated exercise series directory or file."
+        },
+        "position": {
+          "type": "object",
+          "description": "Saved viewer position for this node.",
+          "required": ["x", "y"],
+          "additionalProperties": false,
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        }
+      }
+    }
+  }
+}
