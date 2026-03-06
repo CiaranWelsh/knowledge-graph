@@ -4,6 +4,13 @@
 
 let selectedNode = null;
 
+const NODE_SHAPES = [
+  'round-rectangle', 'ellipse', 'diamond', 'triangle', 'round-triangle',
+  'rectangle', 'cut-rectangle', 'barrel', 'rhomboid', 'round-diamond',
+  'pentagon', 'round-pentagon', 'hexagon', 'round-hexagon', 'concave-hexagon',
+  'heptagon', 'octagon', 'star', 'tag', 'round-tag', 'vee',
+];
+
 function showPanel(nodeId) {
   const panel = document.getElementById('panel');
   const content = document.getElementById('panel-content');
@@ -34,6 +41,17 @@ function showPanel(nodeId) {
             <path d="M6 9l6 6 6-6"/>
           </svg>
         </span>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <span class="panel-label">Shape</span>
+      <div>
+        <select class="shape-select" onchange="changeShape('${escId(nodeId)}', this.value)">
+          ${NODE_SHAPES.map(s =>
+            `<option value="${s}" ${s === (node.shape || 'round-rectangle') ? 'selected' : ''}>${s}</option>`
+          ).join('')}
+        </select>
       </div>
     </div>
 
@@ -109,6 +127,13 @@ function selectNode(nodeId) {
     showPanel(nodeId);
     cy.animate({ center: { eles: node }, duration: 200 });
   }
+}
+
+function changeShape(nodeId, shape) {
+  if (!graphData || !graphData.nodes[nodeId]) return;
+  graphData.nodes[nodeId].shape = shape;
+  refreshGraph();
+  autoSave();
 }
 
 // --- Utils ---

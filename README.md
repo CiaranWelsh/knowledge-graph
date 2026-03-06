@@ -61,6 +61,7 @@ Each key in `nodes` is a kebab-case ID. The value:
 | `status` | string | no | One of the valid status IDs. Defaults to the first status |
 | `last_tested` | string or null | no | ISO date of last assessment |
 | `exercise_series` | string or null | no | Path to associated exercises |
+| `shape` | string | no | Cytoscape.js node shape. Defaults to `round-rectangle`. Options include: `ellipse`, `diamond`, `triangle`, `rectangle`, `hexagon`, `star`, `tag`, `vee`, and more (see schema) |
 | `position` | object | no | Viewer position: `{"x": number, "y": number}` |
 
 ### Statuses

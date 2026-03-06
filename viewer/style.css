@@ -317,6 +317,22 @@ button.danger:hover {
   opacity: 0.7;
 }
 
+.shape-select {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.shape-select:hover {
+  border-color: var(--border-focus);
+}
+
 /* Prereq / dependent tags */
 .tag-list {
   display: flex;

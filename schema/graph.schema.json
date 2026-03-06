@@ -90,6 +90,37 @@
           "type": ["string", "null"],
           "description": "Path to associated exercise series directory or file."
         },
+        "shape": {
+          "type": "string",
+          "description": "Cytoscape.js node shape. Defaults to round-rectangle.",
+          "enum": [
+            "ellipse",
+            "triangle",
+            "round-triangle",
+            "rectangle",
+            "round-rectangle",
+            "bottom-round-rectangle",
+            "cut-rectangle",
+            "barrel",
+            "rhomboid",
+            "diamond",
+            "round-diamond",
+            "pentagon",
+            "round-pentagon",
+            "hexagon",
+            "round-hexagon",
+            "concave-hexagon",
+            "heptagon",
+            "round-heptagon",
+            "octagon",
+            "round-octagon",
+            "star",
+            "tag",
+            "round-tag",
+            "vee"
+          ],
+          "default": "round-rectangle"
+        },
         "position": {
           "type": "object",
           "description": "Saved viewer position for this node.",

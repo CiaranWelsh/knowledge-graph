@@ -26,7 +26,7 @@ function initGraph() {
           'font-size': '11px',
           'font-weight': 500,
           'font-family': 'IBM Plex Sans, -apple-system, sans-serif',
-          'shape': 'round-rectangle',
+          'shape': 'data(shape)',
           'width': 'label',
           'height': 'label',
           'padding': '12px',
@@ -133,6 +133,7 @@ function buildElements(data) {
         bg: colours.bg,
         fg: colours.fg,
         status,
+        shape: node.shape || 'round-rectangle',
         borderWidth: isFrontier ? 2.5 : 0,
         borderColor: isFrontier ? '#ffffff' : colours.bg,
         borderOpacity: isFrontier ? 0.8 : 0,
@@ -243,6 +244,7 @@ function refreshGraph() {
     n.data('bg', colours.bg);
     n.data('fg', colours.fg);
     n.data('status', status);
+    n.data('shape', node.shape || 'round-rectangle');
     n.data('borderWidth', isFrontier ? 2.5 : 0);
     n.data('borderColor', isFrontier ? '#ffffff' : colours.bg);
     n.data('borderOpacity', isFrontier ? 0.8 : 0);
