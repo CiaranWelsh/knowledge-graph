@@ -47,6 +47,7 @@ function addNode() {
 
   hideAddNodeModal();
   initGraph();
+  autoSave();
 }
 
 // --- Delete Node ---
@@ -64,6 +65,7 @@ function deleteNode(nodeId) {
   delete graphData.nodes[nodeId];
   clearPanel();
   initGraph();
+  autoSave();
 }
 
 // --- Edit Status ---
@@ -109,6 +111,7 @@ function pickStatus(status) {
   hideEditStatusModal();
   refreshGraph();
   if (selectedNode === editingStatusNode) showPanel(editingStatusNode);
+  autoSave();
 }
 
 // --- Import / Export ---

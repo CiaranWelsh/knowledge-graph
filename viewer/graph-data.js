@@ -4,6 +4,7 @@
  */
 
 let graphData = null;
+let graphFilePath = null; // set from ?graph= param, used for auto-save
 
 const STATUS_COLOURS = {
   untested:   { bg: '#3a3a4a', fg: '#9999aa', css: 'var(--status-untested-bg)' },
@@ -58,4 +59,32 @@ function getStats() {
   counts.total = Object.keys(graphData.nodes).length;
   counts.frontier = computeFrontier(graphData.nodes).size;
   return counts;
+}
+
+/**
+ * Save current graph state to the server.
+ * Includes node positions if cytoscape is active.
+ * Only works when loaded via ?graph= and running server.js.
+ */
+function autoSave() {
+  if (!graphData || !graphFilePath) return;
+
+  // Capture positions if cy is active
+  if (typeof cy !== 'undefined' && cy) {
+    cy.nodes().forEach(n => {
+      const pos = n.position();
+      if (graphData.nodes[n.id()]) {
+        graphData.nodes[n.id()].position = { x: Math.round(pos.x), y: Math.round(pos.y) };
+      }
+    });
+  }
+
+  const json = JSON.stringify(graphData, null, 2);
+  fetch(`/save?file=${encodeURIComponent(graphFilePath)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: json,
+  }).catch(() => {
+    // Silent fail — server might be npx serve without save endpoint
+  });
 }

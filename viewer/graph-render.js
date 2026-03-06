@@ -250,3 +250,11 @@ function refreshGraph() {
 
   updateLegend();
 }
+
+let nodeFontSize = 11;
+
+function changeFontSize(delta) {
+  nodeFontSize = Math.max(8, Math.min(20, nodeFontSize + delta));
+  if (!cy) return;
+  cy.style().selector('node').style('font-size', nodeFontSize + 'px').update();
+}

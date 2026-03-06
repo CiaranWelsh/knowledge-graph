@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const graphPath = params.get('graph');
 
   if (graphPath) {
+    graphFilePath = graphPath;
     try {
       // Resolve relative to repo root, not viewer/
       const url = graphPath.startsWith('/') ? graphPath : '../' + graphPath.replace(/^\.\.\//, '');
