@@ -1,18 +1,29 @@
 /**
  * App initialisation — load graph and build legend.
+ *
+ * Usage: viewer/?graph=path/to/graph.json
+ * Path is relative to the server root.
+ * If no ?graph param, shows empty canvas with import prompt.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
   buildLegend();
 
-  try {
-    const resp = await fetch('../examples/algorithms.json');
-    if (resp.ok) {
-      graphData = await resp.json();
-      initGraph();
+  const params = new URLSearchParams(window.location.search);
+  const graphPath = params.get('graph');
+
+  if (graphPath) {
+    try {
+      const resp = await fetch(graphPath);
+      if (resp.ok) {
+        graphData = await resp.json();
+        initGraph();
+      } else {
+        console.error(`Failed to load ${graphPath}: ${resp.status}`);
+      }
+    } catch (e) {
+      console.error(`Failed to load ${graphPath}:`, e);
     }
-  } catch (e) {
-    console.log('No default graph found. Use Import to load one.');
   }
 });
 
