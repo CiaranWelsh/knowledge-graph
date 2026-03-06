@@ -228,3 +228,25 @@ function toggleHighlight(status) {
     cy.edges().addClass('dimmed');
   }
 }
+
+function refreshGraph() {
+  if (!cy || !graphData) return;
+  const frontierIds = computeFrontier(graphData.nodes);
+
+  cy.nodes().forEach(n => {
+    const node = graphData.nodes[n.id()];
+    if (!node) return;
+    const status = node.status || 'untested';
+    const colours = STATUS_COLOURS[status] || STATUS_COLOURS.untested;
+    const isFrontier = frontierIds.has(n.id());
+
+    n.data('bg', colours.bg);
+    n.data('fg', colours.fg);
+    n.data('status', status);
+    n.data('borderWidth', isFrontier ? 2.5 : 0);
+    n.data('borderColor', isFrontier ? '#ffffff' : colours.bg);
+    n.data('borderOpacity', isFrontier ? 0.8 : 0);
+  });
+
+  updateLegend();
+}

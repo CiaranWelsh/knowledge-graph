@@ -107,7 +107,7 @@ function pickStatus(status) {
 
   graphData.nodes[editingStatusNode].status = status;
   hideEditStatusModal();
-  initGraph();
+  refreshGraph();
   if (selectedNode === editingStatusNode) showPanel(editingStatusNode);
 }
 
