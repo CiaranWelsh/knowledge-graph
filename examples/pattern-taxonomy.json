@@ -1,0 +1,586 @@
+{
+  "name": "Coding Interview Pattern Taxonomy",
+  "description": "All coding interview patterns organised by tier, category, and specific technique. From docs/notes/02-pattern-taxonomy/.",
+  "nodes": {
+    "arrays-and-hashing": {
+      "name": "Arrays & Hashing",
+      "description": "Tier 1: Hash-based lookups, frequency counting, prefix sums",
+      "prerequisites": [],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p01-hash-map-lookup": {
+      "name": "#1 Hash Map Lookup",
+      "description": "Use a dict for O(1) lookup. Classic: Two Sum.",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p02-two-pass-hash": {
+      "name": "#2 Two-Pass Hash",
+      "description": "First pass builds the map, second pass queries it.",
+      "prerequisites": ["p01-hash-map-lookup"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p03-frequency-counting": {
+      "name": "#3 Frequency Counting",
+      "description": "Count occurrences with a dict or Counter.",
+      "prerequisites": ["p01-hash-map-lookup"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p04-group-by-key": {
+      "name": "#4 Group By Key",
+      "description": "Group items by a computed key. Classic: Group Anagrams.",
+      "prerequisites": ["p03-frequency-counting"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p05-set-deduplication": {
+      "name": "#5 Set for Deduplication",
+      "description": "Use a set to track seen elements or eliminate duplicates.",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p06-prefix-sum": {
+      "name": "#6 Prefix Sum",
+      "description": "Precompute cumulative sums for O(1) range queries.",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p07-difference-array": {
+      "name": "#7 Difference Array",
+      "description": "Inverse of prefix sum for range update operations.",
+      "prerequisites": ["p06-prefix-sum"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "two-pointers": {
+      "name": "Two Pointers",
+      "description": "Tier 1: Pointer techniques on sorted or linear data",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p10-converging-pointers": {
+      "name": "#10 Converging Pointers",
+      "description": "Left and right pointers moving inward. Classic: Two Sum II.",
+      "prerequisites": ["two-pointers"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p11-same-direction": {
+      "name": "#11 Same Direction",
+      "description": "Both pointers move forward at different speeds.",
+      "prerequisites": ["two-pointers"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p14-slow-fast-floyds": {
+      "name": "#14 Slow/Fast (Floyd's)",
+      "description": "Cycle detection with slow and fast pointers.",
+      "prerequisites": ["p11-same-direction"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p15-dutch-national-flag": {
+      "name": "#15 Dutch National Flag",
+      "description": "Three-way partition with three pointers.",
+      "prerequisites": ["two-pointers"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p16-merge-two-sorted": {
+      "name": "#16 Merge Two Sorted",
+      "description": "Merge two sorted arrays/lists with two pointers.",
+      "prerequisites": ["p11-same-direction"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "strings-and-parsing": {
+      "name": "Strings & Parsing",
+      "description": "Tier 1: Window techniques and string matching",
+      "prerequisites": ["arrays-and-hashing", "two-pointers"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p08-sliding-window-fixed": {
+      "name": "#8 Sliding Window (Fixed)",
+      "description": "Fixed-size window over a sequence.",
+      "prerequisites": ["strings-and-parsing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p09-sliding-window-variable": {
+      "name": "#9 Sliding Window (Variable)",
+      "description": "Expand/shrink window to meet a condition.",
+      "prerequisites": ["p08-sliding-window-fixed"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p12-pattern-matching-kmp": {
+      "name": "#12 Pattern Matching (KMP)",
+      "description": "Knuth-Morris-Pratt for substring search.",
+      "prerequisites": ["strings-and-parsing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p13-rolling-hash": {
+      "name": "#13 Rolling Hash",
+      "description": "Rabin-Karp style hash for string matching.",
+      "prerequisites": ["strings-and-parsing", "p01-hash-map-lookup"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "stacks-and-queues": {
+      "name": "Stacks & Queues",
+      "description": "Tier 2: LIFO/FIFO structures for matching, ordering, evaluation",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p17-stack-matching": {
+      "name": "#17 Stack for Matching",
+      "description": "Match opening/closing pairs. Classic: Valid Parentheses.",
+      "prerequisites": ["stacks-and-queues"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p18-monotonic-stack": {
+      "name": "#18 Monotonic Stack",
+      "description": "Stack maintaining increasing/decreasing order for next-greater problems.",
+      "prerequisites": ["p17-stack-matching"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p19-monotonic-queue": {
+      "name": "#19 Monotonic Queue",
+      "description": "Deque maintaining order for sliding window max/min.",
+      "prerequisites": ["p18-monotonic-stack", "p08-sliding-window-fixed"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p20-expression-eval": {
+      "name": "#20 Expression Eval",
+      "description": "Evaluate arithmetic expressions using operator/operand stacks.",
+      "prerequisites": ["p17-stack-matching"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "binary-search": {
+      "name": "Binary Search",
+      "description": "Tier 2: Halving the search space",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p21-classic-binary-search": {
+      "name": "#21 Classic Binary Search",
+      "description": "Find target in sorted array.",
+      "prerequisites": ["binary-search"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p22-search-on-answer": {
+      "name": "#22 Search on Answer",
+      "description": "Binary search the answer space with a feasibility check.",
+      "prerequisites": ["p21-classic-binary-search"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p23-bisect-left-right": {
+      "name": "#23 Bisect Left/Right",
+      "description": "Find insertion point or boundary in sorted data.",
+      "prerequisites": ["p21-classic-binary-search"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "trees": {
+      "name": "Trees",
+      "description": "Tier 2: Binary trees, BSTs, traversals",
+      "prerequisites": ["stacks-and-queues"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p24-dfs-traversal": {
+      "name": "#24 DFS Traversal",
+      "description": "Pre/in/post-order tree traversal via recursion or stack.",
+      "prerequisites": ["trees"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p25-bfs-level-order": {
+      "name": "#25 BFS Level-Order",
+      "description": "Process tree level by level using a queue.",
+      "prerequisites": ["trees"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p26-bst-property": {
+      "name": "#26 BST Property",
+      "description": "Exploit in-order sorted property of BSTs.",
+      "prerequisites": ["p24-dfs-traversal"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p27-tree-path-subtree-dp": {
+      "name": "#27 Tree Path / Subtree DP",
+      "description": "Compute path sums or subtree properties via post-order DFS.",
+      "prerequisites": ["p24-dfs-traversal"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p28-tree-construction": {
+      "name": "#28 Tree Construction",
+      "description": "Build trees from traversal sequences.",
+      "prerequisites": ["p24-dfs-traversal", "p25-bfs-level-order"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "graphs": {
+      "name": "Graphs",
+      "description": "Tier 2: Graph representation, traversal, shortest paths",
+      "prerequisites": ["trees"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p29-graph-bfs": {
+      "name": "#29 Graph BFS",
+      "description": "Breadth-first search for shortest paths in unweighted graphs.",
+      "prerequisites": ["graphs", "p25-bfs-level-order"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p30-graph-dfs": {
+      "name": "#30 Graph DFS",
+      "description": "Depth-first search for connectivity, cycle detection.",
+      "prerequisites": ["graphs", "p24-dfs-traversal"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p31-topological-sort": {
+      "name": "#31 Topological Sort",
+      "description": "Order DAG nodes by dependency. Kahn's or DFS-based.",
+      "prerequisites": ["p30-graph-dfs"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p32-union-find": {
+      "name": "#32 Union-Find (DSU)",
+      "description": "Disjoint set union for connected components.",
+      "prerequisites": ["graphs"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p33-dijkstras": {
+      "name": "#33 Dijkstra's",
+      "description": "Shortest path in weighted graphs with priority queue.",
+      "prerequisites": ["p29-graph-bfs", "heaps"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p34-dfs-bfs-grid": {
+      "name": "#34 DFS/BFS on Grid",
+      "description": "Treat 2D grid as implicit graph. Flood fill, island counting.",
+      "prerequisites": ["p29-graph-bfs", "p30-graph-dfs"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "heaps": {
+      "name": "Heaps",
+      "description": "Tier 2: Priority queues, top-k, merge patterns",
+      "prerequisites": ["trees", "arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p35-top-k": {
+      "name": "#35 Top-K / K-Smallest",
+      "description": "Use a heap to maintain the K largest/smallest elements.",
+      "prerequisites": ["heaps"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p36-merge-k-sorted": {
+      "name": "#36 Merge K Sorted",
+      "description": "Merge K sorted lists using a min-heap.",
+      "prerequisites": ["heaps", "p16-merge-two-sorted"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p37-two-heap-median": {
+      "name": "#37 Two-Heap (Median)",
+      "description": "Track running median with a max-heap and min-heap.",
+      "prerequisites": ["p35-top-k"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "dynamic-programming": {
+      "name": "Dynamic Programming",
+      "description": "Tier 3: Overlapping subproblems, optimal substructure",
+      "prerequisites": ["binary-search"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p38-memoisation": {
+      "name": "#38 Memoisation",
+      "description": "Top-down DP: cache recursive calls.",
+      "prerequisites": ["dynamic-programming"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p39-tabulation": {
+      "name": "#39 Tabulation",
+      "description": "Bottom-up DP: fill a table iteratively.",
+      "prerequisites": ["p38-memoisation"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p40-1d-dp": {
+      "name": "#40 1D DP",
+      "description": "DP on a single sequence. Climbing stairs, house robber.",
+      "prerequisites": ["p39-tabulation"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p41-2d-dp": {
+      "name": "#41 2D DP",
+      "description": "DP on two dimensions. Edit distance, LCS.",
+      "prerequisites": ["p40-1d-dp"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p42-knapsack": {
+      "name": "#42 Knapsack",
+      "description": "0/1 and unbounded knapsack patterns.",
+      "prerequisites": ["p41-2d-dp"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p43-interval-dp": {
+      "name": "#43 Interval DP",
+      "description": "DP over intervals/ranges. Matrix chain, burst balloons.",
+      "prerequisites": ["p41-2d-dp"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "greedy": {
+      "name": "Greedy",
+      "description": "Tier 3: Locally optimal choices leading to global optimum",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p44-greedy-choice": {
+      "name": "#44 Greedy Choice",
+      "description": "Make the locally best decision at each step.",
+      "prerequisites": ["greedy"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p45-interval-scheduling": {
+      "name": "#45 Interval Scheduling",
+      "description": "Sort intervals, greedily select non-overlapping.",
+      "prerequisites": ["p44-greedy-choice"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p46-sort-and-greedy": {
+      "name": "#46 Sort + Greedy",
+      "description": "Sort to enable greedy selection.",
+      "prerequisites": ["p44-greedy-choice"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "backtracking": {
+      "name": "Backtracking",
+      "description": "Tier 3: Exhaustive search with pruning",
+      "prerequisites": ["trees"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p47-permutations-combos": {
+      "name": "#47 Permutations/Combos",
+      "description": "Generate all permutations or combinations via backtracking.",
+      "prerequisites": ["backtracking"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p48-constraint-satisfaction": {
+      "name": "#48 Constraint Satisfaction",
+      "description": "Place items satisfying constraints. N-Queens, Sudoku.",
+      "prerequisites": ["p47-permutations-combos"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p49-word-path-search": {
+      "name": "#49 Word/Path Search",
+      "description": "Search for words/paths in grids via DFS + backtracking.",
+      "prerequisites": ["p47-permutations-combos", "p34-dfs-bfs-grid"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "divide-and-conquer": {
+      "name": "Divide & Conquer",
+      "description": "Tier 3: Split, solve, combine",
+      "prerequisites": ["binary-search"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p50-merge-sort-pattern": {
+      "name": "#50 Merge Sort Pattern",
+      "description": "Divide into halves, sort, merge. Count inversions.",
+      "prerequisites": ["divide-and-conquer", "p16-merge-two-sorted"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p51-quick-select": {
+      "name": "#51 Quick Select",
+      "description": "Find kth element via partition. O(n) average.",
+      "prerequisites": ["divide-and-conquer", "p15-dutch-national-flag"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+
+    "other": {
+      "name": "Other Techniques",
+      "description": "Tier 3: Sorting variants, bit manipulation, advanced structures",
+      "prerequisites": ["arrays-and-hashing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p52-custom-comparator-sort": {
+      "name": "#52 Custom Comparator Sort",
+      "description": "Sort with a custom key/comparator function.",
+      "prerequisites": ["other"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p53-bucket-counting-sort": {
+      "name": "#53 Bucket/Counting Sort",
+      "description": "O(n) sort when value range is bounded.",
+      "prerequisites": ["other", "p03-frequency-counting"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p54-xor-single-element": {
+      "name": "#54 XOR for Single Element",
+      "description": "XOR all elements to find the unique one.",
+      "prerequisites": ["other"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p55-bit-masking": {
+      "name": "#55 Bit Masking",
+      "description": "Use bitmasks to represent subsets.",
+      "prerequisites": ["p54-xor-single-element"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p56-bitwise-arithmetic": {
+      "name": "#56 Bitwise Arithmetic",
+      "description": "Add, multiply, divide using only bit operations.",
+      "prerequisites": ["p54-xor-single-element"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p57-trie": {
+      "name": "#57 Trie (Prefix Tree)",
+      "description": "Tree for prefix-based string operations. Autocomplete, spell check.",
+      "prerequisites": ["trees", "strings-and-parsing"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    },
+    "p58-segment-tree-bit": {
+      "name": "#58 Segment Tree / BIT",
+      "description": "Range query and point update in O(log n).",
+      "prerequisites": ["trees", "p06-prefix-sum"],
+      "status": "untested",
+      "last_tested": null,
+      "exercise_series": null
+    }
+  }
+}
