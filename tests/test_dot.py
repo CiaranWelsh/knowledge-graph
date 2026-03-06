@@ -62,8 +62,8 @@ def test_dot_status_colours():
         },
     }
     dot = generate_dot(data)
-    assert "#4dabf7" in dot  # mastered = blue
-    assert "#ff6b6b" in dot  # weak = red
+    assert "#3e63dd" in dot  # mastered = blue
+    assert "#e5484d" in dot  # weak = red
 
 
 def test_to_dot_via_graph(tmp_path):

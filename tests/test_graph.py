@@ -285,3 +285,85 @@ class TestMutation:
 
         g2 = SkillGraph(p)
         assert g2.nodes["b"]["status"] == "developing"
+
+
+# --- Custom Statuses ---
+
+
+def _custom_status_graph() -> dict:
+    return {
+        "name": "Literature Review",
+        "statuses": [
+            {"id": "unexplored", "label": "Unexplored", "color": "#3a3a4a"},
+            {"id": "surveyed", "label": "Surveyed", "color": "#f5a623"},
+            {"id": "gap_found", "label": "Gap Found", "color": "#46a758"},
+            {"id": "saturated", "label": "Saturated", "color": "#e5484d"},
+        ],
+        "nodes": {
+            "a": {"name": "A", "prerequisites": [], "status": "surveyed"},
+            "b": {"name": "B", "prerequisites": ["a"], "status": "unexplored"},
+        },
+    }
+
+
+class TestCustomStatuses:
+    def test_loads_custom_statuses(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        assert g.nodes["a"]["status"] == "surveyed"
+
+    def test_rejects_default_status_with_custom_scheme(self, tmp_path):
+        data = _custom_status_graph()
+        data["nodes"]["a"]["status"] = "mastered"  # not in custom scheme
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="mastered"):
+            SkillGraph(p)
+
+    def test_update_status_custom(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        g.update_status("b", "gap_found")
+        assert g.nodes["b"]["status"] == "gap_found"
+
+    def test_update_status_rejects_invalid_custom(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        with pytest.raises(ValueError, match="solid"):
+            g.update_status("b", "solid")  # not in custom scheme
+
+    def test_frontier_empty_with_custom(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        assert g.frontier() == []
+
+    def test_add_node_uses_first_custom_status(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        g.add_node("c", "C", prerequisites=["a"])
+        assert g.nodes["c"]["status"] == "unexplored"
+
+    def test_path_to_includes_all_with_custom(self, tmp_path):
+        """With custom scheme, path_to doesn't filter by 'passed'."""
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        path = g.path_to("b")
+        assert path == ["a", "b"]
+
+    def test_rejects_duplicate_status_ids(self, tmp_path):
+        data = _custom_status_graph()
+        data["statuses"].append(
+            {"id": "surveyed", "label": "Dup", "color": "#000"}
+        )
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="duplicate"):
+            SkillGraph(p)
+
+    def test_rejects_status_missing_fields(self, tmp_path):
+        data = {
+            "name": "Bad",
+            "statuses": [{"id": "foo"}],  # missing label, color
+            "nodes": {},
+        }
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="label"):
+            SkillGraph(p)

@@ -7,7 +7,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  buildLegend();
+  buildLegend(); // build with defaults initially
 
   const params = new URLSearchParams(window.location.search);
   const graphPath = params.get('graph');
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const resp = await fetch(url);
       if (resp.ok) {
         graphData = await resp.json();
+        buildLegend(); // rebuild with graph's statuses
         initGraph();
       } else {
         console.error(`Failed to load ${graphPath}: ${resp.status}`);
@@ -31,14 +32,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function buildLegend() {
-  // Footer legend (compact)
-  const footer = document.getElementById('legend-items');
-  const items = STATUSES.map(s => ({
-    status: s,
-    bg: STATUS_COLOURS[s].bg,
-    label: s.charAt(0).toUpperCase() + s.slice(1),
+  const statuses = getStatusList();
+  const items = statuses.map(s => ({
+    status: s.id,
+    bg: s.color,
+    label: s.label,
   }));
 
+  // Footer legend (compact)
+  const footer = document.getElementById('legend-items');
   footer.innerHTML = items.map(item => `
     <div class="legend-item"
          data-status="${item.status}"

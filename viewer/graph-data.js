@@ -6,25 +6,67 @@
 let graphData = null;
 let graphFilePath = null; // set from ?graph= param, used for auto-save
 
-const STATUS_COLOURS = {
-  untested:   { bg: '#3a3a4a', fg: '#9999aa', css: 'var(--status-untested-bg)' },
-  weak:       { bg: '#e5484d', fg: '#ffffff', css: 'var(--status-weak-bg)' },
-  developing: { bg: '#f5a623', fg: '#1a1a2e', css: 'var(--status-developing-bg)' },
-  solid:      { bg: '#46a758', fg: '#ffffff', css: 'var(--status-solid-bg)' },
-  mastered:   { bg: '#3e63dd', fg: '#ffffff', css: 'var(--status-mastered-bg)' },
-};
+// Default status scheme — used when graph JSON has no "statuses" key
+const DEFAULT_STATUSES = [
+  { id: 'untested',   label: 'Untested',   color: '#3a3a4a' },
+  { id: 'weak',       label: 'Weak',       color: '#e5484d' },
+  { id: 'developing', label: 'Developing', color: '#f5a623' },
+  { id: 'solid',      label: 'Solid',      color: '#46a758' },
+  { id: 'mastered',   label: 'Mastered',   color: '#3e63dd' },
+];
 
-const STATUSES = ['untested', 'weak', 'developing', 'solid', 'mastered'];
-const PASSED = new Set(['solid', 'mastered']);
+const DEFAULT_PASSED = new Set(['solid', 'mastered']);
+
+/**
+ * Return the status list for the current graph.
+ * Array of {id, label, color} in display order.
+ */
+function getStatusList() {
+  if (graphData && Array.isArray(graphData.statuses) && graphData.statuses.length > 0) {
+    return graphData.statuses;
+  }
+  return DEFAULT_STATUSES;
+}
+
+/** True if the current graph uses the default status scheme. */
+function usesDefaultScheme() {
+  return !graphData || !Array.isArray(graphData.statuses) || graphData.statuses.length === 0;
+}
+
+/** Return {bg, fg} colours for a status id. */
+function getStatusColour(statusId) {
+  const list = getStatusList();
+  const entry = list.find(s => s.id === statusId);
+  if (!entry) return { bg: '#3a3a4a', fg: '#9999aa' };
+  return { bg: entry.color, fg: contrastColour(entry.color) };
+}
+
+/** Return black or white for best contrast on a hex background. */
+function contrastColour(hex) {
+  const h = hex.replace('#', '');
+  if (h.length !== 6) return '#ffffff';
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.5 ? '#1a1a2e' : '#ffffff';
+}
+
+/** Return the default status id (first in the list). */
+function getDefaultStatus() {
+  return getStatusList()[0]?.id || 'untested';
+}
 
 function computeFrontier(nodes) {
+  // Frontier only meaningful with default scheme
+  if (!usesDefaultScheme()) return new Set();
   const frontier = new Set();
   for (const [id, node] of Object.entries(nodes)) {
     const status = node.status || 'untested';
-    if (PASSED.has(status)) continue;
+    if (DEFAULT_PASSED.has(status)) continue;
     const prereqs = node.prerequisites || [];
     const allPassed = prereqs.every(
-      p => PASSED.has((nodes[p] || {}).status || 'untested')
+      p => DEFAULT_PASSED.has((nodes[p] || {}).status || 'untested')
     );
     if (allPassed) frontier.add(id);
   }
@@ -50,10 +92,11 @@ function getDepth(nodeId, visited = new Set()) {
 
 function getStats() {
   if (!graphData) return {};
+  const statuses = getStatusList();
   const counts = {};
-  for (const s of STATUSES) counts[s] = 0;
+  for (const s of statuses) counts[s.id] = 0;
   for (const node of Object.values(graphData.nodes)) {
-    const s = node.status || 'untested';
+    const s = node.status || getDefaultStatus();
     counts[s] = (counts[s] || 0) + 1;
   }
   counts.total = Object.keys(graphData.nodes).length;

@@ -40,7 +40,7 @@ function addNode() {
     name: name || id,
     description: desc,
     prerequisites: prereqs,
-    status: 'untested',
+    status: getDefaultStatus(),
     last_tested: null,
     exercise_series: null,
   };
@@ -78,7 +78,7 @@ function showEditStatusModal(nodeId) {
   if (!node) return;
 
   editingStatusNode = nodeId;
-  editingStatusValue = node.status || 'untested';
+  editingStatusValue = node.status || getDefaultStatus();
 
   document.getElementById('status-node-name').textContent = node.name || nodeId;
   renderStatusOptions();
@@ -92,13 +92,13 @@ function hideEditStatusModal() {
 
 function renderStatusOptions() {
   const container = document.getElementById('status-options');
-  container.innerHTML = STATUSES.map(s => {
-    const c = STATUS_COLOURS[s];
-    const selected = s === editingStatusValue ? 'selected' : '';
+  const statuses = getStatusList();
+  container.innerHTML = statuses.map(s => {
+    const selected = s.id === editingStatusValue ? 'selected' : '';
     return `
-      <div class="status-option ${selected}" onclick="pickStatus('${s}')">
-        <div class="status-dot" style="background:${c.bg}"></div>
-        <span class="status-label">${s.charAt(0).toUpperCase() + s.slice(1)}</span>
+      <div class="status-option ${selected}" onclick="pickStatus('${s.id}')">
+        <div class="status-dot" style="background:${s.color}"></div>
+        <span class="status-label">${esc(s.label)}</span>
       </div>
     `;
   }).join('');
@@ -125,6 +125,7 @@ function importGraph() {
     reader.onload = (ev) => {
       try {
         graphData = JSON.parse(ev.target.result);
+        buildLegend();
         initGraph();
         clearPanel();
       } catch (err) {

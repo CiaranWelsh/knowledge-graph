@@ -12,8 +12,8 @@ function showPanel(nodeId) {
 
   panel.classList.remove('collapsed');
 
-  const status = node.status || 'untested';
-  const colours = STATUS_COLOURS[status];
+  const status = node.status || getDefaultStatus();
+  const colours = getStatusColour(status);
   const prereqs = node.prerequisites || [];
   const deps = getDependents(nodeId);
 
@@ -49,8 +49,8 @@ function showPanel(nodeId) {
           ? '<span class="tag-empty">Root node</span>'
           : prereqs.map(p => {
               const pn = (graphData.nodes[p] || {});
-              const ps = pn.status || 'untested';
-              const pc = STATUS_COLOURS[ps];
+              const ps = pn.status || getDefaultStatus();
+              const pc = getStatusColour(ps);
               return `<span class="tag" onclick="selectNode('${escId(p)}')">
                 <span style="display:inline-block;width:6px;height:6px;border-radius:2px;background:${pc.bg};margin-right:4px"></span>
                 ${esc(pn.name || p)}
@@ -66,8 +66,8 @@ function showPanel(nodeId) {
           ? '<span class="tag-empty">None</span>'
           : deps.map(d => {
               const dn = (graphData.nodes[d] || {});
-              const ds = dn.status || 'untested';
-              const dc = STATUS_COLOURS[ds];
+              const ds = dn.status || getDefaultStatus();
+              const dc = getStatusColour(ds);
               return `<span class="tag" onclick="selectNode('${escId(d)}')">
                 <span style="display:inline-block;width:6px;height:6px;border-radius:2px;background:${dc.bg};margin-right:4px"></span>
                 ${esc(dn.name || d)}

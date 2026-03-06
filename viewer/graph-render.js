@@ -121,8 +121,8 @@ function buildElements(data) {
   const elements = [];
 
   for (const [id, node] of Object.entries(nodes)) {
-    const status = node.status || 'untested';
-    const colours = STATUS_COLOURS[status] || STATUS_COLOURS.untested;
+    const status = node.status || getDefaultStatus();
+    const colours = getStatusColour(status);
     const isFrontier = frontierIds.has(id);
 
     const el = {
@@ -236,8 +236,8 @@ function refreshGraph() {
   cy.nodes().forEach(n => {
     const node = graphData.nodes[n.id()];
     if (!node) return;
-    const status = node.status || 'untested';
-    const colours = STATUS_COLOURS[status] || STATUS_COLOURS.untested;
+    const status = node.status || getDefaultStatus();
+    const colours = getStatusColour(status);
     const isFrontier = frontierIds.has(n.id());
 
     n.data('bg', colours.bg);

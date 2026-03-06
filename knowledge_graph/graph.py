@@ -7,9 +7,9 @@ from graphlib import CycleError, TopologicalSorter
 from pathlib import Path
 
 from .dot import generate_dot
-from .schema import VALID_STATUSES, ValidationError, validate
+from .schema import VALID_STATUSES, ValidationError, get_valid_status_ids, validate
 
-# Statuses considered "passed" when computing the frontier
+# Statuses considered "passed" when computing the frontier (default scheme only)
 _PASSED = {"solid", "mastered"}
 
 
@@ -74,11 +74,13 @@ class SkillGraph:
                     f"Prerequisite '{p}' does not exist in graph"
                 )
 
+        valid = get_valid_status_ids(self._data)
+        default_status = valid[0] if valid else "untested"
         self.nodes[node_id] = {
             "name": name,
             "description": description,
             "prerequisites": prereqs,
-            "status": "untested",
+            "status": default_status,
             "last_tested": None,
             "exercise_series": None,
         }
@@ -111,9 +113,10 @@ class SkillGraph:
         """Update a node's status."""
         if node_id not in self.nodes:
             raise KeyError(f"Node '{node_id}' not found")
-        if status not in VALID_STATUSES:
+        valid = get_valid_status_ids(self._data)
+        if status not in valid:
             raise ValueError(
-                f"Invalid status '{status}' (must be one of {VALID_STATUSES})"
+                f"Invalid status '{status}' (must be one of {valid})"
             )
         self.nodes[node_id]["status"] = status
 
@@ -123,11 +126,19 @@ class SkillGraph:
         """Return all node IDs in topological order (prerequisites first)."""
         return list(TopologicalSorter(self._adjacency()).static_order())
 
+    @property
+    def _uses_default_scheme(self) -> bool:
+        """True if this graph uses the default status scheme (no custom statuses)."""
+        return "statuses" not in self._data
+
     def frontier(self) -> list[str]:
         """Nodes whose prerequisites are all passed but the node itself isn't.
 
-        These are the skills you should learn next.
+        Only meaningful with the default status scheme. Returns empty list
+        for graphs with custom statuses (frontier is a manual concept there).
         """
+        if not self._uses_default_scheme:
+            return []
         result = []
         for node_id, node in self.nodes.items():
             if node.get("status", "untested") in _PASSED:
@@ -162,7 +173,8 @@ class SkillGraph:
     def path_to(self, target: str) -> list[str]:
         """Ordered learning path from current frontier to target.
 
-        Only includes nodes that are not yet passed.
+        Only includes nodes that are not yet passed. With custom status
+        schemes, all nodes are included (no concept of "passed").
         """
         if target not in self.nodes:
             raise KeyError(f"Node '{target}' not found")
@@ -171,12 +183,15 @@ class SkillGraph:
         needed = set(self.prerequisites_for(target))
         needed.add(target)
 
-        # Filter out already-passed nodes
-        to_learn = {
-            nid
-            for nid in needed
-            if self.nodes[nid].get("status", "untested") not in _PASSED
-        }
+        # Filter out already-passed nodes (only with default scheme)
+        if self._uses_default_scheme:
+            to_learn = {
+                nid
+                for nid in needed
+                if self.nodes[nid].get("status", "untested") not in _PASSED
+            }
+        else:
+            to_learn = needed
 
         # Return in topological order
         full_order = self.learning_order()
