@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (graphPath) {
     try {
-      const resp = await fetch(graphPath);
+      // Resolve relative to repo root, not viewer/
+      const url = graphPath.startsWith('/') ? graphPath : '../' + graphPath.replace(/^\.\.\//, '');
+      const resp = await fetch(url);
       if (resp.ok) {
         graphData = await resp.json();
         initGraph();
