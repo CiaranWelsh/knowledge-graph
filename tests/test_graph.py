@@ -463,3 +463,128 @@ class TestDimensions:
         p = _write_graph(tmp_path, _minimal_graph())
         g = SkillGraph(p)
         assert len(g.nodes) == 3
+
+    def test_save_roundtrip_with_dimensions(self, tmp_path):
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        g.save()
+        g2 = SkillGraph(p)
+        assert g2.nodes["ownership"]["dimensions"]["language"] == "rust"
+        assert g2.nodes["ownership"]["dimensions"]["domain"] == "systems"
+        assert "dimensions" not in g2.nodes["basics"]
+
+    def test_rejects_dimension_missing_values(self, tmp_path):
+        data = {
+            "name": "Bad",
+            "dimensions": [{"id": "lang", "label": "Language"}],  # no values
+            "nodes": {},
+        }
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="values"):
+            SkillGraph(p)
+
+    def test_rejects_dimension_value_missing_color(self, tmp_path):
+        data = {
+            "name": "Bad",
+            "dimensions": [{
+                "id": "lang",
+                "label": "Language",
+                "values": [{"id": "py", "label": "Python"}],  # no color
+            }],
+            "nodes": {},
+        }
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="color"):
+            SkillGraph(p)
+
+    def test_rejects_duplicate_dimension_value_ids(self, tmp_path):
+        data = {
+            "name": "Bad",
+            "dimensions": [{
+                "id": "lang",
+                "label": "Language",
+                "values": [
+                    {"id": "py", "label": "Python", "color": "#000000"},
+                    {"id": "py", "label": "Python2", "color": "#111111"},
+                ],
+            }],
+            "nodes": {},
+        }
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="duplicate"):
+            SkillGraph(p)
+
+    def test_multiple_dimensions_on_node(self, tmp_path):
+        """Node with values for multiple dimensions loads correctly."""
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        dims = g.nodes["ownership"]["dimensions"]
+        assert dims["language"] == "rust"
+        assert dims["domain"] == "systems"
+
+    def test_partial_dimensions_on_node(self, tmp_path):
+        """Node only filling some dimensions is valid."""
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        # templates only has language, not domain
+        dims = g.nodes["templates"]["dimensions"]
+        assert dims["language"] == "cpp"
+        assert "domain" not in dims
+
+
+# --- Combined features ---
+
+
+class TestCombinedFeatures:
+    def test_custom_statuses_with_dimensions(self, tmp_path):
+        """Both custom statuses and dimensions together."""
+        data = {
+            "name": "Combined",
+            "statuses": [
+                {"id": "new", "label": "New", "color": "#aaaaaa"},
+                {"id": "done", "label": "Done", "color": "#00ff00"},
+            ],
+            "dimensions": [
+                {
+                    "id": "area",
+                    "label": "Area",
+                    "values": [
+                        {"id": "ml", "label": "ML", "color": "#ff0000"},
+                    ],
+                }
+            ],
+            "nodes": {
+                "x": {
+                    "name": "X",
+                    "prerequisites": [],
+                    "status": "new",
+                    "dimensions": {"area": "ml"},
+                },
+            },
+        }
+        p = _write_graph(tmp_path, data)
+        g = SkillGraph(p)
+        assert g.nodes["x"]["status"] == "new"
+        assert g.nodes["x"]["dimensions"]["area"] == "ml"
+        # Frontier empty because custom statuses
+        assert g.frontier() == []
+
+    def test_save_roundtrip_custom_statuses(self, tmp_path):
+        p = _write_graph(tmp_path, _custom_status_graph())
+        g = SkillGraph(p)
+        g.update_status("b", "surveyed")
+        g.save()
+        g2 = SkillGraph(p)
+        assert g2.nodes["b"]["status"] == "surveyed"
+        # Custom statuses definition survives roundtrip
+        assert len(g2._data["statuses"]) == 4
+
+    def test_save_roundtrip_dimensions_definition(self, tmp_path):
+        """The dimensions definition itself survives save/load."""
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        g.save()
+        g2 = SkillGraph(p)
+        assert len(g2._data["dimensions"]) == 2
+        assert g2._data["dimensions"][0]["id"] == "language"
+        assert len(g2._data["dimensions"][0]["values"]) == 2

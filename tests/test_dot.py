@@ -66,6 +66,36 @@ def test_dot_status_colours():
     assert "#e5484d" in dot  # weak = red
 
 
+def test_dot_custom_statuses():
+    """DOT uses colours from custom status scheme."""
+    data = {
+        "name": "Test",
+        "statuses": [
+            {"id": "new", "label": "New", "color": "#aabbcc"},
+            {"id": "done", "label": "Done", "color": "#112233"},
+        ],
+        "nodes": {
+            "a": {"name": "A", "prerequisites": [], "status": "done"},
+            "b": {"name": "B", "prerequisites": [], "status": "new"},
+        },
+    }
+    dot = generate_dot(data)
+    assert "#112233" in dot  # done colour
+    assert "#aabbcc" in dot  # new colour
+
+
+def test_dot_unknown_status_fallback():
+    """DOT handles unknown status gracefully with fallback colour."""
+    data = {
+        "name": "Test",
+        "nodes": {
+            "a": {"name": "A", "prerequisites": [], "status": "mystery"},
+        },
+    }
+    dot = generate_dot(data)
+    assert "#d3d3d3" in dot  # fallback grey
+
+
 def test_to_dot_via_graph(tmp_path):
     data = {
         "name": "Test",
@@ -79,3 +109,23 @@ def test_to_dot_via_graph(tmp_path):
     dot = g.to_dot()
     assert "digraph" in dot
     assert '"b" -> "a"' in dot
+
+
+def test_to_dot_custom_statuses_via_graph(tmp_path):
+    """to_dot() works through SkillGraph with custom statuses."""
+    data = {
+        "name": "Custom",
+        "statuses": [
+            {"id": "open", "label": "Open", "color": "#ff0000"},
+            {"id": "closed", "label": "Closed", "color": "#00ff00"},
+        ],
+        "nodes": {
+            "a": {"name": "A", "prerequisites": [], "status": "open"},
+        },
+    }
+    p = _write_graph(tmp_path, data)
+    g = SkillGraph(p)
+    dot = g.to_dot()
+    assert "#ff0000" in dot
+    # Frontier should be empty with custom scheme
+    assert "penwidth" not in dot
