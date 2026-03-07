@@ -24,6 +24,13 @@
         "$ref": "#/$defs/status"
       }
     },
+    "dimensions": {
+      "type": "array",
+      "description": "Custom categorical dimensions for classifying nodes. Each dimension defines a set of named values with colours. The viewer can switch between colouring by status or by any dimension.",
+      "items": {
+        "$ref": "#/$defs/dimension"
+      }
+    },
     "nodes": {
       "type": "object",
       "description": "Map of node ID to node object. IDs should be kebab-case.",
@@ -51,6 +58,53 @@
         "color": {
           "type": "string",
           "description": "Hex colour for node background in the viewer.",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+      }
+    },
+    "dimension": {
+      "type": "object",
+      "description": "A categorical dimension for classifying nodes (e.g. language, domain, phase).",
+      "required": ["id", "label", "values"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this dimension.",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable display label."
+        },
+        "values": {
+          "type": "array",
+          "description": "The possible values for this dimension.",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/dimensionValue"
+          }
+        }
+      }
+    },
+    "dimensionValue": {
+      "type": "object",
+      "description": "A value within a dimension.",
+      "required": ["id", "label", "color"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier within this dimension.",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable display label."
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex colour for this value.",
           "pattern": "^#[0-9a-fA-F]{6}$"
         }
       }
@@ -89,6 +143,13 @@
         "exercise_series": {
           "type": ["string", "null"],
           "description": "Path to associated exercise series directory or file."
+        },
+        "dimensions": {
+          "type": "object",
+          "description": "Dimension values for this node. Keys are dimension IDs, values are value IDs within that dimension.",
+          "additionalProperties": {
+            "type": ["string", "null"]
+          }
         },
         "shape": {
           "type": "string",

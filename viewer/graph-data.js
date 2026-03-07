@@ -57,6 +57,45 @@ function getDefaultStatus() {
   return getStatusList()[0]?.id || 'untested';
 }
 
+// --- Colour mode ---
+
+let colourMode = 'status'; // 'status' or a dimension ID
+
+/** Return the list of dimensions defined in the current graph. */
+function getDimensions() {
+  if (graphData && Array.isArray(graphData.dimensions)) return graphData.dimensions;
+  return [];
+}
+
+/** Set the colour mode and refresh the view. */
+function setColourMode(mode) {
+  colourMode = mode;
+  refreshGraph();
+  buildLegend();
+}
+
+/** Return {bg, fg} for a node based on the current colour mode. */
+function getNodeColour(nodeId) {
+  const node = graphData && graphData.nodes[nodeId];
+  if (!node) return { bg: '#3a3a4a', fg: '#9999aa' };
+
+  if (colourMode === 'status') {
+    return getStatusColour(node.status || getDefaultStatus());
+  }
+
+  // Dimension mode
+  const dimValue = (node.dimensions || {})[colourMode];
+  if (!dimValue) return { bg: '#2a2a3a', fg: '#666680' }; // neutral grey for unassigned
+
+  const dim = getDimensions().find(d => d.id === colourMode);
+  if (!dim) return { bg: '#2a2a3a', fg: '#666680' };
+
+  const val = dim.values.find(v => v.id === dimValue);
+  if (!val) return { bg: '#2a2a3a', fg: '#666680' };
+
+  return { bg: val.color, fg: contrastColour(val.color) };
+}
+
 function computeFrontier(nodes) {
   // Frontier only meaningful with default scheme
   if (!usesDefaultScheme()) return new Set();

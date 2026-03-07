@@ -367,6 +367,22 @@ button.danger:hover {
   color: var(--text-muted);
 }
 
+.toolbar-select {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.toolbar-select:hover {
+  border-color: var(--border-focus);
+}
+
 .shape-select {
   background: var(--bg-overlay);
   color: var(--text-primary);

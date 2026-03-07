@@ -49,6 +49,11 @@
       Export
     </button>
     <div class="toolbar-divider"></div>
+    <span class="toolbar-label">Colour</span>
+    <select id="colour-mode-select" class="toolbar-select" onchange="setColourMode(this.value)">
+      <option value="status">Status</option>
+    </select>
+    <div class="toolbar-divider"></div>
     <span class="toolbar-label">Font</span>
     <button onclick="changeFontSize(-1)" class="ghost" title="Smaller text">A−</button>
     <button onclick="changeFontSize(1)" class="ghost" title="Larger text">A+</button>

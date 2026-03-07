@@ -57,6 +57,22 @@ function showPanel(nodeId) {
       </div>
     </div>
 
+    ${getDimensions().map(dim => {
+      const nodeVal = (node.dimensions || {})[dim.id] || '';
+      return `
+        <div class="panel-section">
+          <span class="panel-label">${esc(dim.label)}</span>
+          <div>
+            <select class="shape-select" onchange="changeDimension('${escId(nodeId)}', '${escId(dim.id)}', this.value)">
+              <option value="" ${!nodeVal ? 'selected' : ''}>— None —</option>
+              ${dim.values.map(v =>
+                `<option value="${v.id}" ${v.id === nodeVal ? 'selected' : ''}>${esc(v.label)}</option>`
+              ).join('')}
+            </select>
+          </div>
+        </div>`;
+    }).join('')}
+
     <div class="panel-section">
       <span class="panel-label">Description</span>
       <textarea class="panel-textarea" id="desc-editor"
@@ -147,6 +163,16 @@ function changeDescription(nodeId, value) {
   const trimmed = value.trim();
   if (graphData.nodes[nodeId].description === trimmed) return;
   graphData.nodes[nodeId].description = trimmed;
+  autoSave();
+}
+
+function changeDimension(nodeId, dimId, value) {
+  if (!graphData || !graphData.nodes[nodeId]) return;
+  if (!graphData.nodes[nodeId].dimensions) {
+    graphData.nodes[nodeId].dimensions = {};
+  }
+  graphData.nodes[nodeId].dimensions[dimId] = value || null;
+  refreshGraph();
   autoSave();
 }
 

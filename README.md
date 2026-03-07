@@ -47,6 +47,7 @@ A graph is a single JSON file with this structure:
 | `name` | string | yes | Human-readable graph name |
 | `description` | string | no | What this graph is for |
 | `statuses` | array | no | Custom status scheme (see below). If omitted, defaults are used |
+| `dimensions` | array | no | Categorical dimensions for classifying nodes (see below) |
 | `nodes` | object | yes | Map of node ID to node object |
 
 ### Node object
@@ -61,8 +62,36 @@ Each key in `nodes` is a kebab-case ID. The value:
 | `status` | string | no | One of the valid status IDs. Defaults to the first status |
 | `last_tested` | string or null | no | ISO date of last assessment |
 | `exercise_series` | string or null | no | Path to associated exercises |
+| `dimensions` | object | no | Dimension values for this node. Keys are dimension IDs, values are value IDs (or null) |
 | `shape` | string | no | Cytoscape.js node shape. Defaults to `round-rectangle`. Options include: `ellipse`, `diamond`, `triangle`, `rectangle`, `hexagon`, `star`, `tag`, `vee`, and more (see schema) |
 | `position` | object | no | Viewer position: `{"x": number, "y": number}` |
+
+### Dimensions
+
+Optional categorical properties for classifying nodes. Define at the top level, assign per node. The viewer can switch between colouring by status or by any dimension.
+
+```json
+{
+  "dimensions": [
+    {
+      "id": "language",
+      "label": "Language",
+      "values": [
+        { "id": "cpp",  "label": "C++",  "color": "#e5484d" },
+        { "id": "rust", "label": "Rust", "color": "#f5a623" }
+      ]
+    }
+  ],
+  "nodes": {
+    "ownership": {
+      "name": "Ownership",
+      "dimensions": { "language": "rust" }
+    }
+  }
+}
+```
+
+Each dimension has `id`, `label`, and `values` (array of `{id, label, color}`). Each node's `dimensions` maps dimension ID to value ID (or null for unassigned). In the viewer, the "Colour" dropdown in the toolbar switches between status and dimension colouring.
 
 ### Statuses
 

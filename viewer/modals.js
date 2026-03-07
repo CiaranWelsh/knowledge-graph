@@ -125,6 +125,8 @@ function importGraph() {
     reader.onload = (ev) => {
       try {
         graphData = JSON.parse(ev.target.result);
+        colourMode = 'status';
+        buildColourModeDropdown();
         buildLegend();
         initGraph();
         clearPanel();

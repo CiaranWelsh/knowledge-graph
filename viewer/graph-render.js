@@ -121,8 +121,7 @@ function buildElements(data) {
   const elements = [];
 
   for (const [id, node] of Object.entries(nodes)) {
-    const status = node.status || getDefaultStatus();
-    const colours = getStatusColour(status);
+    const colours = getNodeColour(id);
     const isFrontier = frontierIds.has(id);
 
     const el = {
@@ -132,7 +131,7 @@ function buildElements(data) {
         label: node.name || id,
         bg: colours.bg,
         fg: colours.fg,
-        status,
+        status: node.status || getDefaultStatus(),
         shape: node.shape || 'round-rectangle',
         borderWidth: isFrontier ? 2.5 : 0,
         borderColor: isFrontier ? '#ffffff' : colours.bg,
@@ -201,10 +200,10 @@ function runLayout(name) {
   cy.layout(opts[name] || opts.dagre).run();
 }
 
-function toggleHighlight(status) {
+function toggleHighlight(key) {
   if (!cy) return;
 
-  if (highlightStatus === status) {
+  if (highlightStatus === key) {
     highlightStatus = null;
     cy.elements().removeClass('dimmed');
     document.querySelectorAll('.legend-item').forEach(
@@ -213,19 +212,27 @@ function toggleHighlight(status) {
     return;
   }
 
-  highlightStatus = status;
+  highlightStatus = key;
 
   document.querySelectorAll('.legend-item').forEach(el => {
-    const s = el.dataset.status;
-    el.classList.toggle('dimmed', s !== status);
+    el.classList.toggle('dimmed', el.dataset.status !== key);
   });
 
-  if (status === 'frontier') {
+  if (key === 'frontier') {
     const frontier = computeFrontier(graphData.nodes);
     cy.nodes().forEach(n => n.toggleClass('dimmed', !frontier.has(n.id())));
     cy.edges().addClass('dimmed');
+  } else if (colourMode === 'status') {
+    cy.nodes().forEach(n => n.toggleClass('dimmed', n.data('status') !== key));
+    cy.edges().addClass('dimmed');
   } else {
-    cy.nodes().forEach(n => n.toggleClass('dimmed', n.data('status') !== status));
+    // Dimension mode — filter by dimension value
+    cy.nodes().forEach(n => {
+      const node = graphData.nodes[n.id()];
+      const val = (node && node.dimensions || {})[colourMode] || '';
+      const match = key === '__none' ? !val : val === key;
+      n.toggleClass('dimmed', !match);
+    });
     cy.edges().addClass('dimmed');
   }
 }
@@ -237,14 +244,13 @@ function refreshGraph() {
   cy.nodes().forEach(n => {
     const node = graphData.nodes[n.id()];
     if (!node) return;
-    const status = node.status || getDefaultStatus();
-    const colours = getStatusColour(status);
+    const colours = getNodeColour(n.id());
     const isFrontier = frontierIds.has(n.id());
 
     n.data('label', node.name || n.id());
     n.data('bg', colours.bg);
     n.data('fg', colours.fg);
-    n.data('status', status);
+    n.data('status', node.status || getDefaultStatus());
     n.data('shape', node.shape || 'round-rectangle');
     n.data('borderWidth', isFrontier ? 2.5 : 0);
     n.data('borderColor', isFrontier ? '#ffffff' : colours.bg);

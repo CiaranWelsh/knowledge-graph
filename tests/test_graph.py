@@ -367,3 +367,99 @@ class TestCustomStatuses:
         p = _write_graph(tmp_path, data)
         with pytest.raises(ValidationError, match="label"):
             SkillGraph(p)
+
+
+# --- Dimensions ---
+
+
+def _dimension_graph() -> dict:
+    return {
+        "name": "Systems Programming",
+        "dimensions": [
+            {
+                "id": "language",
+                "label": "Language",
+                "values": [
+                    {"id": "cpp", "label": "C++", "color": "#e5484d"},
+                    {"id": "rust", "label": "Rust", "color": "#f5a623"},
+                ],
+            },
+            {
+                "id": "domain",
+                "label": "Domain",
+                "values": [
+                    {"id": "systems", "label": "Systems", "color": "#3e63dd"},
+                    {"id": "web", "label": "Web", "color": "#46a758"},
+                ],
+            },
+        ],
+        "nodes": {
+            "ownership": {
+                "name": "Ownership",
+                "prerequisites": [],
+                "status": "untested",
+                "dimensions": {"language": "rust", "domain": "systems"},
+            },
+            "templates": {
+                "name": "Templates",
+                "prerequisites": [],
+                "status": "untested",
+                "dimensions": {"language": "cpp"},
+            },
+            "basics": {
+                "name": "Basics",
+                "prerequisites": [],
+                "status": "untested",
+            },
+        },
+    }
+
+
+class TestDimensions:
+    def test_loads_with_dimensions(self, tmp_path):
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        assert g.nodes["ownership"]["dimensions"]["language"] == "rust"
+
+    def test_node_without_dimensions_ok(self, tmp_path):
+        p = _write_graph(tmp_path, _dimension_graph())
+        g = SkillGraph(p)
+        assert "dimensions" not in g.nodes["basics"]
+
+    def test_null_dimension_value_ok(self, tmp_path):
+        data = _dimension_graph()
+        data["nodes"]["basics"]["dimensions"] = {"language": None}
+        p = _write_graph(tmp_path, data)
+        g = SkillGraph(p)
+        assert g.nodes["basics"]["dimensions"]["language"] is None
+
+    def test_rejects_invalid_dimension_value(self, tmp_path):
+        data = _dimension_graph()
+        data["nodes"]["ownership"]["dimensions"]["language"] = "python"
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="python"):
+            SkillGraph(p)
+
+    def test_rejects_unknown_dimension(self, tmp_path):
+        data = _dimension_graph()
+        data["nodes"]["ownership"]["dimensions"]["color"] = "red"
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="color"):
+            SkillGraph(p)
+
+    def test_rejects_duplicate_dimension_ids(self, tmp_path):
+        data = _dimension_graph()
+        data["dimensions"].append({
+            "id": "language",
+            "label": "Dup",
+            "values": [{"id": "x", "label": "X", "color": "#000000"}],
+        })
+        p = _write_graph(tmp_path, data)
+        with pytest.raises(ValidationError, match="duplicate"):
+            SkillGraph(p)
+
+    def test_no_dimensions_at_all_ok(self, tmp_path):
+        """Graphs without dimensions field still work."""
+        p = _write_graph(tmp_path, _minimal_graph())
+        g = SkillGraph(p)
+        assert len(g.nodes) == 3
