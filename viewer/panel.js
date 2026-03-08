@@ -2,7 +2,7 @@
  * Side panel — node detail view.
  */
 
-let selectedNode = null;
+var selectedNode = null;
 
 const NODE_SHAPES = [
   'round-rectangle', 'ellipse', 'diamond', 'triangle', 'round-triangle',
@@ -89,9 +89,10 @@ function showPanel(nodeId) {
               const pn = (graphData.nodes[p] || {});
               const ps = pn.status || getDefaultStatus();
               const pc = getStatusColour(ps);
-              return `<span class="tag" onclick="selectNode('${escId(p)}')">
+              return `<span class="tag">
                 <span style="display:inline-block;width:6px;height:6px;border-radius:2px;background:${pc.bg};margin-right:4px"></span>
-                ${esc(pn.name || p)}
+                <span onclick="selectNode('${escId(p)}')" style="cursor:pointer">${esc(pn.name || p)}</span>
+                <span class="tag-remove" onclick="removePrerequisite('${escId(nodeId)}','${escId(p)}')" title="Remove prerequisite">&times;</span>
               </span>`;
             }).join('')}
       </div>
@@ -173,6 +174,22 @@ function changeDimension(nodeId, dimId, value) {
   }
   graphData.nodes[nodeId].dimensions[dimId] = value || null;
   refreshGraph();
+  autoSave();
+}
+
+function removePrerequisite(nodeId, prereqId) {
+  if (!graphData || !graphData.nodes[nodeId]) return;
+  const node = graphData.nodes[nodeId];
+  node.prerequisites = (node.prerequisites || []).filter(p => p !== prereqId);
+
+  // Remove the edge from cytoscape
+  if (cy) {
+    const edge = cy.getElementById(`${prereqId}->${nodeId}`);
+    if (edge.length) edge.remove();
+  }
+
+  refreshGraph();
+  if (selectedNode === nodeId) showPanel(nodeId);
   autoSave();
 }
 

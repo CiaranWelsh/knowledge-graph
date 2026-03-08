@@ -25,13 +25,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         buildLegend();
         initGraph();
       } else {
-        console.error(`Failed to load ${graphPath}: ${resp.status}`);
+        // File doesn't exist — offer to create it
+        showNewGraphModal(graphPath);
       }
     } catch (e) {
       console.error(`Failed to load ${graphPath}:`, e);
     }
+  } else {
+    // No ?graph= param — show new graph modal
+    showNewGraphModal();
   }
 });
+
+function changeGraphName(value) {
+  const trimmed = value.trim();
+  if (!trimmed || !graphData) return;
+  if (graphData.name === trimmed) return;
+  graphData.name = trimmed;
+  autoSave();
+}
+
+function showNewGraphModal(prefilledPath) {
+  const modal = document.getElementById('new-graph-modal');
+  modal.classList.add('visible');
+  if (prefilledPath) {
+    document.getElementById('new-graph-path').value = prefilledPath;
+  }
+  setTimeout(() => document.getElementById('new-graph-name').focus(), 50);
+}
+
+function hideNewGraphModal() {
+  document.getElementById('new-graph-modal').classList.remove('visible');
+  document.getElementById('new-graph-name').value = '';
+  document.getElementById('new-graph-path').value = '';
+}
+
+function createNewGraph() {
+  const name = document.getElementById('new-graph-name').value.trim() || 'Untitled Graph';
+  const filePath = document.getElementById('new-graph-path').value.trim();
+
+  graphData = { name, nodes: {} };
+  graphFilePath = filePath || null;
+
+  // Update URL if a path was given
+  if (filePath) {
+    const url = new URL(window.location);
+    url.searchParams.set('graph', filePath);
+    window.history.replaceState({}, '', url);
+  }
+
+  hideNewGraphModal();
+  colourMode = 'status';
+  buildColourModeDropdown();
+  buildLegend();
+  initGraph();
+
+  document.getElementById('graph-title').value = name;
+
+  if (graphFilePath) autoSave();
+}
 
 function buildColourModeDropdown() {
   const select = document.getElementById('colour-mode-select');

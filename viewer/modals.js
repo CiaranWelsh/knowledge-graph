@@ -4,9 +4,31 @@
 
 // --- Add Node ---
 
-function showAddNodeModal() {
+let addNodePosition = null; // {x, y} if opened via double-click
+let autoIdEnabled = true;   // false once user manually edits the ID
+
+function toKebabCase(str) {
+  return str.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function autoGenerateId(nameValue) {
+  if (!autoIdEnabled) return;
+  document.getElementById('new-node-id').value = toKebabCase(nameValue);
+}
+
+function showAddNodeModal(position) {
+  addNodePosition = position || null;
+  autoIdEnabled = true;
   document.getElementById('add-node-modal').classList.add('visible');
-  setTimeout(() => document.getElementById('new-node-id').focus(), 50);
+  setTimeout(() => document.getElementById('new-node-name').focus(), 50);
+
+  // Detect manual ID edits to stop auto-generation
+  const idField = document.getElementById('new-node-id');
+  idField.oninput = () => { autoIdEnabled = false; };
 }
 
 function hideAddNodeModal() {
@@ -15,6 +37,8 @@ function hideAddNodeModal() {
   document.getElementById('new-node-name').value = '';
   document.getElementById('new-node-desc').value = '';
   document.getElementById('new-node-prereqs').value = '';
+  addNodePosition = null;
+  autoIdEnabled = true;
 }
 
 function addNode() {
@@ -36,7 +60,7 @@ function addNode() {
     }
   }
 
-  graphData.nodes[id] = {
+  const nodeData = {
     name: name || id,
     description: desc,
     prerequisites: prereqs,
@@ -44,6 +68,12 @@ function addNode() {
     last_tested: null,
     exercise_series: null,
   };
+
+  if (addNodePosition) {
+    nodeData.position = { x: Math.round(addNodePosition.x), y: Math.round(addNodePosition.y) };
+  }
+
+  graphData.nodes[id] = nodeData;
 
   hideAddNodeModal();
   initGraph();

@@ -1,8 +1,23 @@
+#!/usr/bin/env node
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 8765;
+// --- CLI argument parsing ---
+const args = process.argv.slice(2);
+let port = null;
+let graphFile = null;
+
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '-p' && args[i + 1] && /^\d+$/.test(args[i + 1])) {
+    port = parseInt(args[i + 1], 10);
+    i++; // skip next
+  } else if (!args[i].startsWith('-')) {
+    graphFile = path.resolve(args[i]);
+  }
+}
+
+const PORT = port || process.env.PORT || 8765;
 const ROOT = __dirname;
 
 const MIME = {
@@ -16,6 +31,38 @@ const MIME = {
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
+
+  // GET /ext-graph — serve the external graph file passed via CLI
+  if (req.method === 'GET' && url.pathname === '/ext-graph' && graphFile) {
+    fs.readFile(graphFile, (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'Graph file not found' }));
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(data);
+    });
+    return;
+  }
+
+  // POST /ext-graph — save back to the external graph file
+  if (req.method === 'POST' && url.pathname === '/ext-graph' && graphFile) {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        JSON.parse(body);
+        fs.mkdirSync(path.dirname(graphFile), { recursive: true });
+        fs.writeFileSync(graphFile, body + '\n');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, path: graphFile }));
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
 
   // GET /schema — return the JSON Schema
   if (req.method === 'GET' && url.pathname === '/schema') {
@@ -52,6 +99,7 @@ const server = http.createServer((req, res) => {
       try {
         // Validate it's valid JSON before writing
         JSON.parse(body);
+        fs.mkdirSync(path.dirname(target), { recursive: true });
         fs.writeFileSync(target, body + '\n');
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, path: file }));
@@ -85,5 +133,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Skill Tree → http://localhost:${PORT}/viewer/`);
+  const viewerUrl = graphFile
+    ? `http://localhost:${PORT}/viewer/?graph=ext-graph`
+    : `http://localhost:${PORT}/viewer/`;
+  console.log(`Knowledge Graph → ${viewerUrl}`);
 });

@@ -2,9 +2,9 @@
  * Cytoscape graph rendering and layout.
  */
 
-let cy = null;
-let currentLayout = 'dagre';
-let highlightStatus = null;
+var cy = null;
+var currentLayout = 'dagre';
+var highlightStatus = null;
 
 function initGraph() {
   const elements = buildElements(graphData);
@@ -77,6 +77,56 @@ function initGraph() {
           'width': 2,
         }
       },
+      {
+        selector: '.eh-handle',
+        style: {
+          'background-color': '#7c5cfc',
+          'width': 10,
+          'height': 10,
+          'shape': 'ellipse',
+          'overlay-opacity': 0,
+          'border-width': 8,
+          'border-opacity': 0,
+        }
+      },
+      {
+        selector: '.eh-hover',
+        style: {
+          'background-color': '#9678ff',
+        }
+      },
+      {
+        selector: '.eh-ghost-edge.eh-preview-active',
+        style: {
+          'line-color': '#7c5cfc',
+          'target-arrow-color': '#7c5cfc',
+          'target-arrow-shape': 'triangle',
+          'opacity': 0.6,
+        }
+      },
+      {
+        selector: '.eh-source',
+        style: {
+          'border-width': 2,
+          'border-color': '#7c5cfc',
+        }
+      },
+      {
+        selector: '.eh-target',
+        style: {
+          'border-width': 2,
+          'border-color': '#9678ff',
+        }
+      },
+      {
+        selector: '.eh-preview',
+        style: {
+          'background-color': '#7c5cfc',
+          'line-color': '#7c5cfc',
+          'target-arrow-color': '#7c5cfc',
+          'source-arrow-color': '#7c5cfc',
+        }
+      },
     ],
     layout: { name: 'preset' },
     wheelSensitivity: 0.25,
@@ -101,9 +151,26 @@ function initGraph() {
     deleteNode(e.target.id());
   });
 
+  // Double-click on empty canvas → add node at that position
+  cy.on('dbltap', (e) => {
+    if (e.target === cy) {
+      const pos = e.position; // model coordinates
+      showAddNodeModal({ x: pos.x, y: pos.y });
+    }
+  });
+
+  // Edge drawing with edgehandles (Shift+drag)
+  initEdgeHandles();
+
   // Update title
-  document.getElementById('graph-title').textContent =
-    graphData.name || 'Skill Tree';
+  const titleEl = document.getElementById('graph-title');
+  titleEl.value = graphData.name || 'Skill Tree';
+
+  // Hide canvas hint if there are nodes
+  const hint = document.getElementById('canvas-hint');
+  if (hint) {
+    hint.classList.toggle('hidden', Object.keys(graphData.nodes).length > 0);
+  }
 
   // If nodes have saved positions, use them; otherwise run layout
   const hasPositions = Object.values(graphData.nodes).some(n => n.position);
@@ -260,7 +327,70 @@ function refreshGraph() {
   updateLegend();
 }
 
-let nodeFontSize = 11;
+var eh = null;
+var shiftHeld = false;
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Shift' && !shiftHeld) {
+    shiftHeld = true;
+    if (eh) eh.enableDrawMode();
+    const badge = document.getElementById('edge-mode-badge');
+    if (badge) badge.classList.add('visible');
+  }
+});
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'Shift') {
+    shiftHeld = false;
+    if (eh) eh.disableDrawMode();
+    const badge = document.getElementById('edge-mode-badge');
+    if (badge) badge.classList.remove('visible');
+  }
+});
+
+function initEdgeHandles() {
+  if (!cy || typeof cy.edgehandles !== 'function') return;
+  if (eh) eh.destroy();
+
+  eh = cy.edgehandles({
+    canConnect: (sourceNode, targetNode) => {
+      // No self-loops, no duplicate edges
+      if (sourceNode.id() === targetNode.id()) return false;
+      const targetData = graphData.nodes[targetNode.id()];
+      if (!targetData) return false;
+      return !(targetData.prerequisites || []).includes(sourceNode.id());
+    },
+    edgeParams: (sourceNode, targetNode) => ({
+      data: {
+        id: `${sourceNode.id()}->${targetNode.id()}`,
+        source: sourceNode.id(),
+        target: targetNode.id(),
+      }
+    }),
+    snap: true,
+    noEdgeEventsInDraw: true,
+    disableBrowserGestures: true,
+  });
+
+  // When an edge is created via edgehandles, update the data model
+  cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
+    const sourceId = sourceNode.id();
+    const targetId = targetNode.id();
+    const targetData = graphData.nodes[targetId];
+    if (targetData) {
+      if (!targetData.prerequisites) targetData.prerequisites = [];
+      if (!targetData.prerequisites.includes(sourceId)) {
+        targetData.prerequisites.push(sourceId);
+      }
+    }
+    refreshGraph();
+    autoSave();
+  });
+
+  // Enable draw mode if shift is currently held
+  if (shiftHeld) eh.enableDrawMode();
+}
+
+var nodeFontSize = 11;
 
 function changeFontSize(delta) {
   nodeFontSize = Math.max(4, Math.min(72, nodeFontSize + delta));

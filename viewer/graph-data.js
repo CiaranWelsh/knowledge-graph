@@ -3,8 +3,8 @@
  * This is the single source of truth for graph data in the viewer.
  */
 
-let graphData = null;
-let graphFilePath = null; // set from ?graph= param, used for auto-save
+var graphData = null;
+var graphFilePath = null; // set from ?graph= param, used for auto-save
 
 // Default status scheme — used when graph JSON has no "statuses" key
 const DEFAULT_STATUSES = [
@@ -59,7 +59,7 @@ function getDefaultStatus() {
 
 // --- Colour mode ---
 
-let colourMode = 'status'; // 'status' or a dimension ID
+var colourMode = 'status'; // 'status' or a dimension ID
 
 /** Return the list of dimensions defined in the current graph. */
 function getDimensions() {
@@ -162,7 +162,10 @@ function autoSave() {
   }
 
   const json = JSON.stringify(graphData, null, 2);
-  fetch(`/save?file=${encodeURIComponent(graphFilePath)}`, {
+  const saveUrl = graphFilePath === 'ext-graph'
+    ? '/ext-graph'
+    : `/save?file=${encodeURIComponent(graphFilePath)}`;
+  fetch(saveUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: json,

@@ -1,0 +1,32 @@
+{
+  "name": "knowledge-graph",
+  "version": "1.0.0",
+  "description": "A directed acyclic graph (DAG) for tracking skills, knowledge, or any domain where nodes have prerequisites. Includes a Python library for validation/querying and a browser-based viewer/editor.",
+  "main": "server.js",
+  "bin": {
+    "knowledge-graph": "server.js"
+  },
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CiaranWelsh/knowledge-graph.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CiaranWelsh/knowledge-graph/issues"
+  },
+  "homepage": "https://github.com/CiaranWelsh/knowledge-graph#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

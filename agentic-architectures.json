@@ -1,0 +1,180 @@
+{
+  "name": "Architectures for Building Agentic AI",
+  "description": "Skill tree based on Nowaczyk (2025) 'Architectures for Building Agentic AI'. Covers classical foundations, a taxonomy of five architecture families, architectural building blocks, and cross-cutting reliability concerns. The central claim: reliability is an architectural property.",
+  "dimensions": [
+    {
+      "id": "category",
+      "label": "Category",
+      "values": [
+        { "id": "foundations", "label": "Classical Foundations", "color": "#6A9BD2" },
+        { "id": "pillars", "label": "Reliability Pillars", "color": "#D2956A" },
+        { "id": "family", "label": "Architecture Family", "color": "#7BC47F" },
+        { "id": "reliability", "label": "Family Reliability", "color": "#D26A6A" },
+        { "id": "building_blocks", "label": "Building Blocks", "color": "#B07CD2" }
+      ]
+    }
+  ],
+  "nodes": {
+    "agentic-ai-definition": {
+      "name": "Agentic AI vs Generative AI",
+      "description": "Define agentic AI as goal-directed, tool-using decision makers in closed loops. Distinguish from generative AI (the reasoning substrate). Explain how generative models supply the policy while agentic architecture supplies the machinery.",
+      "prerequisites": [],
+      "status": "untested",
+      "dimensions": { "category": "foundations" }
+    },
+    "reactive-architectures": {
+      "name": "Reactive Architectures",
+      "description": "Describe reactive architectures: condition-action rules, low latency, robustness to distributional shifts. Identify failure modes: myopic responses, partial observability, unmodelled delays.",
+      "prerequisites": ["agentic-ai-definition"],
+      "status": "untested",
+      "dimensions": { "category": "foundations" }
+    },
+    "deliberative-architectures": {
+      "name": "Deliberative Architectures",
+      "description": "Describe deliberative architectures: explicit world models, search/planning for action selection. Identify failure modes: stale plans, model incompleteness, computational overrun.",
+      "prerequisites": ["agentic-ai-definition"],
+      "status": "untested",
+      "dimensions": { "category": "foundations" }
+    },
+    "hybrid-architectures": {
+      "name": "Hybrid Architectures",
+      "description": "Explain hybrid layered architectures: reactive layers for fast safety, deliberative layers for goals/planning. Identify coordination failure modes and the need for well-defined interfaces, escalation rules, and time budgets.",
+      "prerequisites": ["reactive-architectures", "deliberative-architectures"],
+      "status": "untested",
+      "dimensions": { "category": "foundations" }
+    },
+    "bdi-model": {
+      "name": "BDI Model for GenAI Agents",
+      "description": "Map BDI to modern agents: beliefs -> memory (scratchpads, episodic logs, semantic stores), desires -> goals and constraints, intentions -> active plans and tool calls. Explain commitment strategies, intention revision, adoption filters, and execution monitors.",
+      "prerequisites": ["hybrid-architectures"],
+      "status": "untested",
+      "dimensions": { "category": "foundations" }
+    },
+    "reliability-as-architecture": {
+      "name": "Reliability as an Architectural Property",
+      "description": "Argue that reliability emerges from decomposition, interface enforcement, and control loops — not model accuracy alone. Reliability means consistent achievement of intended outcomes within safety/cost bounds, with known failure modes.",
+      "prerequisites": ["agentic-ai-definition"],
+      "status": "untested",
+      "dimensions": { "category": "pillars" }
+    },
+    "componentisation": {
+      "name": "Componentisation",
+      "description": "Decompose an agent into components (perception, memory, planning, tool routing, execution, verification, oversight) with clear boundaries. Explain how this confines faults, makes defects diagnosable, and enables staged deployment.",
+      "prerequisites": ["reliability-as-architecture"],
+      "status": "untested",
+      "dimensions": { "category": "pillars" }
+    },
+    "interfaces-and-contracts": {
+      "name": "Interfaces and Contracts",
+      "description": "Design typed, schema-validated messages between components. Apply explicit capability scopes, idempotent and transactional semantics, rate/authority limits. Explain how contracts turn ambiguous model proposals into valid commands or actionable errors.",
+      "prerequisites": ["componentisation"],
+      "status": "untested",
+      "dimensions": { "category": "pillars" }
+    },
+    "control-and-assurance-loops": {
+      "name": "Control and Assurance Loops",
+      "description": "Implement monitors (compare planned vs observed), critics/verifiers (check factuality, policy, invariants), supervisors (budgets, escalation, termination), and fallbacks (safe modes when assumptions fail). Explain how these prevent cascading failures.",
+      "prerequisites": ["componentisation"],
+      "status": "untested",
+      "dimensions": { "category": "pillars" }
+    },
+    "tool-using-agents": {
+      "name": "Tool-Using Agents",
+      "description": "Design tool-using agents where a generative model decides which external capabilities to invoke. Separate three concerns: planners (intentional structure), tool-routers (map to concrete tools with typed schemas), execution sandboxes (pre-condition checks, simulation, transactional commit).",
+      "prerequisites": ["componentisation", "interfaces-and-contracts"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "tool-using-patterns": {
+      "name": "MRKL, ReAct, and ReWOO Patterns",
+      "description": "Compare three tool-using designs: MRKL (neuro-symbolic modularity, route sub-tasks to specialist modules), ReAct (interleaved thought + action with governors), ReWOO (plan-then-execute with auditable plan artefacts). Analyse each pattern's reliability tradeoffs.",
+      "prerequisites": ["tool-using-agents"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "tool-assurance": {
+      "name": "Tool-Using Assurance Envelope",
+      "description": "Apply typed schemas and validators, idempotent tools and request deduplication, capability-based permissioning (least privilege), transactional semantics (saga patterns), budgets and termination criteria, and deterministic observability to tool calls. Mitigate hallucinated tools, infinite loops, tool flakiness, and prompt injection.",
+      "prerequisites": ["tool-using-agents", "control-and-assurance-loops"],
+      "status": "untested",
+      "dimensions": { "category": "reliability" }
+    },
+    "memory-architecture": {
+      "name": "Memory-Augmented Agents",
+      "description": "Design the three memory layers: working memory (scratchpads, CoT traces), episodic memory (structured logs of prior tasks/outcomes), semantic memory (documents, facts via RAG). Explain MemGPT-style virtual context with paging, eviction, and prefetch. Understand memory as an active subsystem, not a passive store.",
+      "prerequisites": ["componentisation"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "memory-reliability": {
+      "name": "Memory Reliability",
+      "description": "Implement provenance and attribution (source IDs, hashes, timestamps), freshness and validity windows (TTL, staleness thresholds), poisoning defences (sanitisation, trust tiers, allow/deny lists), compaction and retention (layered storage, summarisation with back-pointers), and separation of working memory from long-term stores.",
+      "prerequisites": ["memory-architecture", "interfaces-and-contracts"],
+      "status": "untested",
+      "dimensions": { "category": "reliability" }
+    },
+    "planning-agents": {
+      "name": "Planning and Self-Improvement Agents",
+      "description": "Separate proposal, selection, and execution in planning agents. Compare four patterns: Tree of Thoughts (search over intermediate thoughts), Graph of Thoughts (arbitrary dependency graphs), PAL (emit executable programs), Reflexion (self-evaluation and test-time repair via episodic memory).",
+      "prerequisites": ["componentisation", "control-and-assurance-loops"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "planning-reliability": {
+      "name": "Planning Reliability",
+      "description": "Implement search control (branching/depth policies, budget-aware controllers, why-stopped codes), verifiers and critics (domain verifiers, tool-assisted critique, trust boundaries), sandboxed execution (constrained interpreters, pure functions, snapshot/rollback), provenance and replay (persist search as dataset, deterministic replay), and cost governance.",
+      "prerequisites": ["planning-agents"],
+      "status": "untested",
+      "dimensions": { "category": "reliability" }
+    },
+    "multi-agent-systems": {
+      "name": "Multi-Agent Systems",
+      "description": "Compare three topologies: supervisor-worker (central coordinator, clear authority), peer collaboration (protocol-driven convergence), role-play protocols (complementary roles with inception prompts). Understand AutoGen (conversation-as-computation) and CAMEL (stable role-seeded dialogues).",
+      "prerequisites": ["componentisation"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "multi-agent-reliability": {
+      "name": "Multi-Agent Reliability",
+      "description": "Implement protocol invariants (typed messages, role scoping, capability tokens), termination conditions (hard limits + soft stop rules + why-stopped codes), arbitration (arbiter agents, tie-breakers, human escalation), consensus/critique loops (heterogeneous critics, evidence-backed, referee-gated), and failure isolation (separate sandboxes, typed summaries between agents, checkpointed artefacts).",
+      "prerequisites": ["multi-agent-systems", "control-and-assurance-loops"],
+      "status": "untested",
+      "dimensions": { "category": "reliability" }
+    },
+    "embodied-web-agents": {
+      "name": "Embodied and Web Agents",
+      "description": "Design agents that act in physical (robots, industrial) or web (browsers, GUIs) environments. Identify amplified risks: unbounded inputs, long-horizon side-effects, opaque dependencies. Understand the privileged boundary where actuation occurs.",
+      "prerequisites": ["tool-using-agents", "control-and-assurance-loops"],
+      "status": "untested",
+      "dimensions": { "category": "family" }
+    },
+    "embodied-web-reliability": {
+      "name": "Embodied/Web Reliability",
+      "description": "Apply simulate-before-actuate (digital twins, dry-run DOM), least-privilege capability tokens (narrow, time-limited), separate fast safety from slow reasoning (interlocks near plant, planning in supervisory layer), certified monitors (control barrier functions, geofences), security-first web interaction (sandboxed browsers, deterministic contracts, data-not-instructions for untrusted text, dual control for mutations).",
+      "prerequisites": ["embodied-web-agents"],
+      "status": "untested",
+      "dimensions": { "category": "reliability" }
+    },
+    "component-spine": {
+      "name": "The Canonical Component Spine",
+      "description": "Connect the eight recurring components: goal manager (normalise objectives), planner (propose decompositions), tool-router (map to concrete capabilities), executor (sandbox + commit), memory layers (episodic + semantic), verifiers/critics (check plans and results), safety monitor (budgets, invariants, fallbacks), telemetry (observable and replayable traces).",
+      "prerequisites": ["componentisation", "bdi-model"],
+      "status": "untested",
+      "dimensions": { "category": "building_blocks" }
+    },
+    "structured-interfaces": {
+      "name": "Structured Interfaces and Permissions",
+      "description": "Apply function schemas and structured outputs (JSON Schema contracts), validators and guardrails (type, range, policy, content filters), and capability-scoped permissions (least privilege, time-limited tokens, idempotency). Understand how these make actions deterministically safe or deterministically refused.",
+      "prerequisites": ["interfaces-and-contracts"],
+      "status": "untested",
+      "dimensions": { "category": "building_blocks" }
+    },
+    "orchestration-frameworks": {
+      "name": "Orchestration: LangGraph vs AutoGen",
+      "description": "Choose between LangGraph (stateful graph runtime for deterministic control and auditability of single/small-agent systems) and AutoGen (conversation-as-computation for division of labour in multi-agent settings). In both cases, enforce typed messages, per-edge budgets, per-role capabilities, mandatory verifiers, and record hashes for replay.",
+      "prerequisites": ["component-spine", "structured-interfaces"],
+      "status": "untested",
+      "dimensions": { "category": "building_blocks" }
+    }
+  }
+}

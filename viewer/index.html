@@ -9,6 +9,7 @@
 <script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
 <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
 <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+<script src="https://unpkg.com/cytoscape-edgehandles@4.0.1/cytoscape-edgehandles.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,7 +21,9 @@
         <circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/>
         <line x1="12" y1="8" x2="5" y2="16"/><line x1="12" y1="8" x2="19" y2="16"/>
       </svg>
-      <span id="graph-title">Skill Tree</span>
+      <input id="graph-title" class="graph-title-input" value="Skill Tree"
+             onblur="changeGraphName(this.value)"
+             onkeydown="if(event.key==='Enter'){this.blur()}">
     </div>
   </div>
   <div class="toolbar-center">
@@ -67,6 +70,20 @@
 
 <main id="main">
   <div id="cy"></div>
+  <div id="canvas-hint" class="canvas-hint">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.4">
+      <circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/>
+      <circle cx="18" cy="6" r="3" stroke-dasharray="2 2"/>
+    </svg>
+    <span>Double-click to add a node</span>
+    <span class="canvas-hint-sub">Shift + drag between nodes to connect them</span>
+  </div>
+  <div id="edge-mode-badge" class="edge-mode-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="5" cy="12" r="3"/><circle cx="19" cy="12" r="3"/><line x1="8" y1="12" x2="16" y2="12"/>
+    </svg>
+    <span>Edge Mode</span>
+  </div>
   <div id="canvas-legend">
     <div class="canvas-legend-title">Legend</div>
     <div class="canvas-legend-items" id="canvas-legend-items"></div>
@@ -100,10 +117,11 @@
 <div class="modal-overlay" id="add-node-modal">
   <div class="modal">
     <h3>Add Node</h3>
-    <label for="new-node-id">ID</label>
-    <input type="text" id="new-node-id" placeholder="kebab-case-id">
     <label for="new-node-name">Name</label>
-    <input type="text" id="new-node-name" placeholder="Human Readable Name">
+    <input type="text" id="new-node-name" placeholder="Human Readable Name"
+           oninput="autoGenerateId(this.value)">
+    <label for="new-node-id" class="label-secondary">ID</label>
+    <input type="text" id="new-node-id" placeholder="auto-generated-from-name">
     <label for="new-node-desc">Description</label>
     <textarea id="new-node-desc" placeholder="What this skill means..."></textarea>
     <label for="new-node-prereqs">Prerequisites</label>
@@ -123,6 +141,21 @@
     <div class="status-options" id="status-options"></div>
     <div class="modal-actions">
       <button class="ghost" onclick="hideEditStatusModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Graph Modal -->
+<div class="modal-overlay" id="new-graph-modal">
+  <div class="modal modal-sm">
+    <h3>New Graph</h3>
+    <label for="new-graph-name">Name</label>
+    <input type="text" id="new-graph-name" placeholder="My Graph">
+    <label for="new-graph-path">File path (for saving)</label>
+    <input type="text" id="new-graph-path" placeholder="graphs/my-graph.json">
+    <div class="modal-actions">
+      <button class="ghost" onclick="hideNewGraphModal()">Cancel</button>
+      <button class="primary" onclick="createNewGraph()">Create</button>
     </div>
   </div>
 </div>

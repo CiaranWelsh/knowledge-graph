@@ -9,3 +9,5 @@ build/
 uv.lock
 *.dot
 *.svg
+node_modules/
+test-results/

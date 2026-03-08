@@ -1,0 +1,227 @@
+{
+  "name": "Classes of Agentic AI Systems",
+  "description": "Taxonomy of agentic AI system classes and concrete examples. Sources: Nowaczyk 2025 (5 families), Liu 2024 (18 patterns), Wang 2024 (survey), Moralles 2026 (SLR). Two node types: classes (categories) and concrete examples.",
+  "dimensions": [
+    {
+      "id": "node_type",
+      "label": "Node Type",
+      "values": [
+        { "id": "root", "label": "Root", "color": "#2C3E50" },
+        { "id": "class", "label": "Agent Class", "color": "#3498DB" },
+        { "id": "example", "label": "Concrete Example", "color": "#2ECC71" }
+      ]
+    }
+  ],
+  "nodes": {
+    "agentic-ai": {
+      "name": "Agentic AI Systems",
+      "description": "Systems that autonomously pursue goals by deciding what to do next, selecting and using tools, consulting and updating memory, and interacting with their environment under constraints (Nowaczyk 2025).",
+      "prerequisites": [],
+      "status": "untested",
+      "dimensions": { "node_type": "root" }
+    },
+
+    "conversational-assistants": {
+      "name": "Conversational Assistants",
+      "description": "Single-agent systems that interact via dialogue. Human-in-the-loop for every output. Primarily text generation with optional tool use. Low autonomy — the human reads and judges every response.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-claude-code": {
+      "name": "Claude Code",
+      "description": "Anthropic's CLI agent. Reads code, proposes edits, runs commands. Human approves each action. Conversational interface with tool use.",
+      "prerequisites": ["conversational-assistants"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-chatgpt": {
+      "name": "ChatGPT",
+      "description": "OpenAI's conversational assistant. Dialogue-based, can use tools (browsing, code interpreter, DALL-E). Human reviews all output.",
+      "prerequisites": ["conversational-assistants"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-github-copilot": {
+      "name": "GitHub Copilot",
+      "description": "Code completion and chat assistant embedded in IDEs. Suggests code inline. Human accepts or rejects each suggestion.",
+      "prerequisites": ["conversational-assistants"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "task-automation-agents": {
+      "name": "Task Automation Agents",
+      "description": "Single-agent systems that plan and execute multi-step workflows with reduced human oversight. Broader tool access. Medium autonomy — human sets the goal, agent executes.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-autogpt": {
+      "name": "AutoGPT",
+      "description": "Autonomous agent that decomposes goals into tasks, executes them, and self-reflects. Uses Tree-of-Thoughts for multi-path planning. Minimal human intervention during execution.",
+      "prerequisites": ["task-automation-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-devin": {
+      "name": "Devin",
+      "description": "Autonomous software engineering agent. Takes a task description, plans implementation, writes code, runs tests, debugs. Operates in a full development environment.",
+      "prerequisites": ["task-automation-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-voyager": {
+      "name": "Voyager",
+      "description": "Autonomous Minecraft agent. Explores, acquires skills, builds a reusable skill library. Plans and executes without human guidance. Continuous learning via episodic memory.",
+      "prerequisites": ["task-automation-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "domain-specific-agents": {
+      "name": "Domain-Specific Agents",
+      "description": "Custom-built agents for specific professional or safety-critical environments. Tightly constrained tool access, domain-specific memory, formal verification. High autonomy within narrow scope.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-fleet-diagnosis": {
+      "name": "Fleet Diagnosis Agent (Nowaczyk)",
+      "description": "Agent monitoring autonomous electric vehicle fleets. Triages anomalies, runs digital-twin simulations, recommends mitigations within safety envelope. Goal Manager, Planner, Verifier, Safety Supervisor architecture.",
+      "prerequisites": ["domain-specific-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-chemcrow": {
+      "name": "ChemCrow",
+      "description": "Chemistry research agent. Plans and executes multi-step chemical reasoning using specialised chemistry tools (reaction prediction, molecular property calculation).",
+      "prerequisites": ["domain-specific-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-clinical-decision": {
+      "name": "Clinical Decision Support Agent",
+      "description": "Healthcare agent that interprets patient data, suggests diagnoses and treatments. Operates under strict regulatory constraints (FDA, HIPAA). Requires audit trails and human override.",
+      "prerequisites": ["domain-specific-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "multi-agent-systems": {
+      "name": "Multi-Agent Systems",
+      "description": "Multiple specialised agents coordinating via protocols. Division of labour, negotiation, debate. Three topologies: supervisor-worker, peer collaboration, role-play. High autonomy — agents coordinate autonomously.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-metagpt": {
+      "name": "MetaGPT",
+      "description": "Multi-agent software development. Agents play roles: architect, project manager, programmer, tester. Follow standardised operating procedures. Role-based cooperation pattern.",
+      "prerequisites": ["multi-agent-systems"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-crewai": {
+      "name": "crewAI",
+      "description": "Multi-agent orchestration framework. Agents grouped for discussion on topics. Supports debate-based cooperation, role assignment, and tool sharing.",
+      "prerequisites": ["multi-agent-systems"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-autogen": {
+      "name": "AutoGen",
+      "description": "Microsoft's multi-agent conversation framework. Treats conversation as computation. Programs agent roles, message routes, tool access, stop conditions. Supervisor-worker and peer patterns.",
+      "prerequisites": ["multi-agent-systems"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-generative-agents": {
+      "name": "Generative Agents (Stanford)",
+      "description": "25 agents in a virtual town simulating daily life. Episodic memory, reflection, planning. Agents form relationships, spread information, coordinate activities autonomously.",
+      "prerequisites": ["multi-agent-systems"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "embodied-agents": {
+      "name": "Embodied / Physical Agents",
+      "description": "Agents that act in the physical world via robots or autonomous vehicles. Actions have irreversible consequences. Require simulation-before-actuation, safety envelopes, human-in-the-loop for high-impact actions. Very high autonomy.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-inner-monologue": {
+      "name": "Inner Monologue",
+      "description": "Robotic agent that decomposes instructions into actionable steps using LLM reasoning. Leverages human feedback for object recognition. Embodied reasoning through planning with language models.",
+      "prerequisites": ["embodied-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-autonomous-vehicles": {
+      "name": "Autonomous Vehicle Systems",
+      "description": "Self-driving systems with perception, planning and actuation. LLM-augmented planning layers for complex scenarios. Safety-critical — requires certified monitors, geofences, kill-switches.",
+      "prerequisites": ["embodied-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-smart-llm": {
+      "name": "SMART-LLM",
+      "description": "Multi-agent robot task planning using LLMs. Decomposes complex tasks into sub-tasks assigned to different robot agents. Coordination via shared plans.",
+      "prerequisites": ["embodied-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "web-agents": {
+      "name": "Web Agents",
+      "description": "Agents that interact with websites, APIs and GUIs. Volatile, untrusted environments. DOM changes, adversarial content, third-party scripts. Require sandboxing, deterministic contracts, data-not-instructions for untrusted text.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-webshop": {
+      "name": "WebShop",
+      "description": "Agent that navigates e-commerce websites to find and purchase products matching user specifications. Evaluated on product search and retrieval benchmarks.",
+      "prerequisites": ["web-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-webarena": {
+      "name": "WebArena",
+      "description": "Benchmark for web agents across multiple website domains. Tests end-to-end task completion accuracy. Agents must navigate realistic web environments.",
+      "prerequisites": ["web-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-apple-intelligence": {
+      "name": "Apple Intelligence",
+      "description": "Cross-application agent. Writing, image generation, schedule management across apps. Captures entities from photos, creates emoji. Agent adapter pattern across diverse tool interfaces.",
+      "prerequisites": ["web-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+
+    "simulation-agents": {
+      "name": "Simulation Agents",
+      "description": "Agents that simulate human behaviour, social dynamics, or complex systems. Used for research, training, and prediction. Must balance simulation fidelity with LLM knowledge boundaries.",
+      "prerequisites": ["agentic-ai"],
+      "status": "untested",
+      "dimensions": { "node_type": "class" }
+    },
+    "ex-agentsims": {
+      "name": "AgentSims",
+      "description": "Framework for evaluating LLM agents. Flexibly design planning, memory and action strategies. Measure effectiveness in interactive environments.",
+      "prerequisites": ["simulation-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    },
+    "ex-social-simulacra": {
+      "name": "Social Simulacra",
+      "description": "Simulated social community prototyping. Generates personas and social interactions to help designers understand community dynamics before building real platforms.",
+      "prerequisites": ["simulation-agents"],
+      "status": "untested",
+      "dimensions": { "node_type": "example" }
+    }
+  }
+}
